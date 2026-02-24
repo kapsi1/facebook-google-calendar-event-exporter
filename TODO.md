@@ -21,14 +21,14 @@
   - `icons`: provide 16×16, 48×48, 128×128 icons
 
 ## 3. ICS File Parser (`src/ics-parser.ts`)
-- [ ] Implement ICS line unfolding (RFC 5545 §3.1): join continuation lines that begin with a space/tab
-- [ ] Parse the `VEVENT` block and extract fields:
+- [x] Implement ICS line unfolding (RFC 5545 §3.1): join continuation lines that begin with a space/tab
+- [x] Parse the `VEVENT` block and extract fields:
   - `SUMMARY` → event title
   - `DTSTART` / `DTEND` → start and end datetimes (keep `YYYYMMDDTHHMMSSz` format)
   - `DESCRIPTION` → event description (unescape `\\n` → newline, `\\,` → comma, etc.)
   - `LOCATION` → event location (also needs unfolding)
   - `URL` → original Facebook event URL (append to description)
-- [ ] Write unit tests for the parser using a sample `.ics` file (the one in the repo)
+- [x] Write unit tests for the parser using a sample `.ics` file (the one in the repo)
   - Test line unfolding with multi-byte UTF-8 characters
   - Test description unescaping (`\\n`, `\\,`, `\\;`, `\\\\`)
   - Test events with missing optional fields (no LOCATION, no DESCRIPTION)

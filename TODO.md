@@ -11,7 +11,7 @@
   - Output to `dist/` folder
 
 ## 2. Extension Manifest
-- [ ] Create `manifest.json` (Manifest V3)
+- [x] Create `manifest.json` (Manifest V3)
   - `name`: "Facebook to Google Calendar Exporter"
   - `version`: "1.0.0"
   - `permissions`: `["activeTab"]`

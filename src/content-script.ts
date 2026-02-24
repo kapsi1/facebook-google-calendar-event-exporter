@@ -1,12 +1,19 @@
 import { buildGoogleCalendarUrl } from './gcal-url-builder';
 import { parseIcsEvent } from './ics-parser';
 
-// Constants for Polish Facebook UI
-// (We could internationalize this later, but addressing user's exact UI first)
-const ADD_TO_CALENDAR_TEXT = 'Dodaj do kalendarza';
-const EXPORT_EVENT_TITLE = 'Eksportuj wydarzenie';
-const EXPORT_BUTTON_TEXT = 'Eksportuj';
-const GCAL_OPTION_TEXT = 'Eksportuj do Google Calendar';
+// Lookups for English and Polish UI
+const TEXT_MATCHERS = {
+  EXPORT_EVENT_TITLE: ['Eksportuj wydarzenie', 'Export Event'],
+  ADD_TO_CALENDAR: ['Dodaj do kalendarza', 'Add to calendar'],
+  EXPORT_BUTTON: ['Eksportuj', 'Export'],
+  CLOSE_BUTTON_ARIA: ['Zamknij', 'Close'],
+};
+
+function getGcalText(matchedNativeText: string): string {
+  return matchedNativeText === 'Dodaj do kalendarza'
+    ? 'Eksportuj do Google Calendar'
+    : 'Export to Google Calendar';
+}
 
 let isOptionInjected = false;
 let isGcalSelected = false;
@@ -30,7 +37,7 @@ function checkForExportModal() {
   const dialogs = document.querySelectorAll('div[role="dialog"]');
   for (const dialog of dialogs) {
     const isExportModal = Array.from(dialog.querySelectorAll('span')).some(
-      (span) => span.textContent === EXPORT_EVENT_TITLE,
+      (span) => span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent),
     );
 
     if (isExportModal) {
@@ -41,11 +48,18 @@ function checkForExportModal() {
 }
 
 function injectGoogleCalendarOption(dialog: HTMLElement) {
-  // Find the "Dodaj do kalendarza" option
+  // Find the "Add to calendar" option
   const spans = Array.from(dialog.querySelectorAll('span'));
-  const addToCalendarSpan = spans.find((s) => s.textContent === ADD_TO_CALENDAR_TEXT);
+  let matchedNativeText: string | null = null;
+  const addToCalendarSpan = spans.find((s) => {
+    if (s.textContent && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(s.textContent)) {
+      matchedNativeText = s.textContent;
+      return true;
+    }
+    return false;
+  });
 
-  if (!addToCalendarSpan) return;
+  if (!addToCalendarSpan || !matchedNativeText) return;
 
   // Traverse up to find the clickable radio button container
   // Facebook's DOM is deeply nested div soup, so we traverse up a few levels until we find a div with role="radio" or similar clickable wrapper
@@ -60,10 +74,10 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
 
   // Modify the cloned element to represent Google Calendar
   const textSpan = Array.from(gcalOption.querySelectorAll('span')).find(
-    (s) => s.textContent === ADD_TO_CALENDAR_TEXT,
+    (s) => s.textContent === matchedNativeText,
   );
   if (textSpan) {
-    textSpan.textContent = GCAL_OPTION_TEXT;
+    textSpan.textContent = getGcalText(matchedNativeText);
   }
 
   // Insert it after the native option
@@ -110,7 +124,9 @@ function updateRadioVisuals(allRadios: HTMLElement[], selectedRadio: HTMLElement
 function setupExportButtonInterceptor(dialog: HTMLElement) {
   // Find the Export button
   const buttons = Array.from(dialog.querySelectorAll('div[role="button"]'));
-  const exportButton = buttons.find((b) => b.textContent?.includes(EXPORT_BUTTON_TEXT));
+  const exportButton = buttons.find(
+    (b) => b.textContent && TEXT_MATCHERS.EXPORT_BUTTON.some((t) => b.textContent?.includes(t)),
+  );
 
   if (!exportButton) return;
 
@@ -127,7 +143,10 @@ function setupExportButtonInterceptor(dialog: HTMLElement) {
         executeGoogleCalendarExport();
 
         // Optionally close the modal
-        const closeButton = dialog.querySelector('div[aria-label="Zamknij"]') as HTMLElement;
+        const closeSelectors = TEXT_MATCHERS.CLOSE_BUTTON_ARIA.map(
+          (aria) => `div[aria-label="${aria}"]`,
+        ).join(', ');
+        const closeButton = dialog.querySelector(closeSelectors) as HTMLElement;
         if (closeButton) closeButton.click();
       }
     },
@@ -143,11 +162,11 @@ function executeGoogleCalendarExport() {
 
   chrome.runtime.sendMessage({ action: 'START_INTERCEPT' });
 
-  // Now, programmatically click the ACTUAL "Dodaj do kalendarza" option and then Export, so Facebook generates the file.
+  // Now, programmatically click the ACTUAL "Add to calendar" option and then Export, so Facebook generates the file.
   // Wait, if we click export, Facebook triggers a download.
   const dialogs = document.querySelectorAll('div[role="dialog"]');
   const addCalSpan = Array.from(document.querySelectorAll('span')).find(
-    (s) => s.textContent === ADD_TO_CALENDAR_TEXT,
+    (s) => s.textContent && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(s.textContent),
   );
   const nativeRadio = addCalSpan?.closest('[role="radio"]') as HTMLElement;
 
@@ -155,8 +174,8 @@ function executeGoogleCalendarExport() {
     nativeRadio.click(); // Select native
 
     setTimeout(() => {
-      const exportBtn = Array.from(document.querySelectorAll('div[role="button"]')).find((b) =>
-        b.textContent?.includes(EXPORT_BUTTON_TEXT),
+      const exportBtn = Array.from(document.querySelectorAll('div[role="button"]')).find(
+        (b) => b.textContent && TEXT_MATCHERS.EXPORT_BUTTON.some((t) => b.textContent?.includes(t)),
       ) as HTMLElement;
       if (exportBtn) {
         exportBtn.click(); // Export! Background worker will catch the download.
@@ -171,7 +190,7 @@ document.addEventListener('click', () => {
     const dialogs = document.querySelectorAll('div[role="dialog"]');
     const isExportModalOpen = Array.from(dialogs).some((dialog) =>
       Array.from(dialog.querySelectorAll('span')).some(
-        (span) => span.textContent === EXPORT_EVENT_TITLE,
+        (span) => span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent),
       ),
     );
 

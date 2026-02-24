@@ -50,27 +50,27 @@
   - Verify proper encoding of special characters (Polish diacritics, commas, newlines)
 
 ## 5. Content Script — DOM Injection (`src/content-script.ts`)
-- [ ] Detect when the Facebook "Eksportuj wydarzenie" ("Export event") modal opens
+- [x] Detect when the Facebook "Eksportuj wydarzenie" ("Export event") modal opens
   - Use a `MutationObserver` on the document body to detect the modal dialog appearing
   - Identify the modal by its structure: look for the radio button group containing "Dodaj do kalendarza" and "Wyślij na adres e-mail"
-- [ ] Inject a third radio option: "Eksportuj do Google Calendar" ("Export to Google Calendar")
+- [x] Inject a third radio option: "Eksportuj do Google Calendar" ("Export to Google Calendar")
   - Clone the styling of existing radio buttons so it blends in with Facebook's UI
   - Insert the new option after "Dodaj do kalendarza" or at the end of the radio group
-- [ ] Track which radio option is selected (original behavior vs. new Google Calendar option)
-- [ ] When "Eksportuj" ("Export") button is clicked **and** the Google Calendar option is selected:
+- [x] Track which radio option is selected (original behavior vs. new Google Calendar option)
+- [x] When "Eksportuj" ("Export") button is clicked **and** the Google Calendar option is selected:
   1. Intercept the click event (prevent default if needed)
   2. Trigger the existing "Dodaj do kalendarza" download to get the .ics file
   3. Parse the downloaded .ics file content
   4. Build the Google Calendar URL from the parsed data
   5. Open the Google Calendar URL in a new tab (`window.open(url, '_blank')`)
-- [ ] When a non-Google-Calendar option is selected, let the default Facebook behavior proceed unchanged
+- [x] When a non-Google-Calendar option is selected, let the default Facebook behavior proceed unchanged
 
 ## 6. Background Service Worker (`src/background.ts`) — Optional
-- [ ] If needed: listen for download events to intercept the .ics file download
+- [x] If needed: listen for download events to intercept the .ics file download
   - Use `chrome.downloads.onDeterminingFilename` or `chrome.downloads.onCreated`
   - Read the file contents, parse, build URL, and open tab
   - Cancel or clean up the .ics download afterward
-- [ ] Alternatively: use `fetch()` in the content script to directly request the .ics download URL (if it can be extracted from the page DOM before clicking Export)
+- [x] Alternatively: use `fetch()` in the content script to directly request the .ics download URL (if it can be extracted from the page DOM before clicking Export)
   - This avoids needing download interception entirely
 
 ## 7. Styling

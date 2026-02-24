@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { buildGoogleCalendarUrl } from './gcal-url-builder';
 import type { IcsEvent } from './ics-parser';
 
@@ -49,7 +49,7 @@ describe('Google Calendar URL Builder', () => {
     };
 
     const url = buildGoogleCalendarUrl(event);
-    
+
     // URLSearchParams automatically handles encoding, ensuring it's valid:
     expect(url).toContain('details=Multi%0ALine%0ADescription+with%2C+commas+%26+%26+symbols');
     expect(url).toContain('location=Warsaw%2C+Poland');

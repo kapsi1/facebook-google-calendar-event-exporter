@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { parseIcsEvent, unfoldIcs, unescapeIcsProperty } from './ics-parser';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { describe, expect, it } from 'vitest';
+import { parseIcsEvent, unescapeIcsProperty, unfoldIcs } from './ics-parser';
 
 describe('ICS Parser', () => {
   describe('unfoldIcs', () => {
@@ -10,7 +10,9 @@ describe('ICS Parser', () => {
   string that is folded
  \twith mixed whitespace`;
       const unfolded = unfoldIcs(folded);
-      expect(unfolded).toBe('DESCRIPTION:This is a long string that is folded\twith mixed whitespace');
+      expect(unfolded).toBe(
+        'DESCRIPTION:This is a long string that is folded\twith mixed whitespace',
+      );
     });
 
     it('handles CRLF correctly', () => {
@@ -51,13 +53,13 @@ END:VCALENDAR`;
 
       const result = parseIcsEvent(icsContent);
       expect(result).not.toBeNull();
-      
+
       expect(result?.summary).toBe('Zwiedzanie Schronu O.P.P.M. szpital im. S. Żeromskiego');
       expect(result?.dtstart).toBe('20260228T170000Z');
       expect(result?.dtend).toBe('20260228T200000Z');
       expect(result?.location).toBe('Schron - OPPM - Szpital Żeromskiego');
       expect(result?.url).toBe('https://www.facebook.com/events/1222469870066926/');
-      
+
       // Check partial content of unfolded description
       expect(result?.description).toContain('Zapraszamy do unikalnego schronu');
       expect(result?.description).toContain('Szpitala im. S. Żeromskiego, w którym'); // Notice the unescaped comma

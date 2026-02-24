@@ -34,7 +34,7 @@
   - Test events with missing optional fields (no LOCATION, no DESCRIPTION)
 
 ## 4. Google Calendar URL Builder (`src/gcal-url-builder.ts`)
-- [ ] Build a function that takes parsed event data and returns a Google Calendar prefilled URL:
+- [x] Build a function that takes parsed event data and returns a Google Calendar prefilled URL:
   ```
   https://calendar.google.com/calendar/render?action=TEMPLATE
     &text=<SUMMARY>
@@ -42,9 +42,9 @@
     &details=<DESCRIPTION>
     &location=<LOCATION>
   ```
-- [ ] URL-encode all parameter values properly (use `encodeURIComponent`)
-- [ ] Handle optional fields gracefully (omit `&location=` if no location, etc.)
-- [ ] Write unit tests:
+- [x] URL-encode all parameter values properly (use `encodeURIComponent`)
+- [x] Handle optional fields gracefully (omit `&location=` if no location, etc.)
+- [x] Write unit tests:
   - Verify correct URL structure with all fields populated
   - Verify correct URL with missing optional fields
   - Verify proper encoding of special characters (Polish diacritics, commas, newlines)

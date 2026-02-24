@@ -4,9 +4,9 @@
 - [x] Create `package.json` with project metadata, TypeScript, and build tooling
 - [x] Initialize git repository
 - [x] Add `.gitignore` (node_modules, dist, .env, etc.)
-- [ ] Install dev dependencies: TypeScript, webpack/vite, `@anthropic-ai/sdk` types if needed
-- [ ] Set up TypeScript config (`tsconfig.json`) targeting ES2020+ with strict mode
-- [ ] Set up bundler config (webpack or vite) for building the extension
+- [x] Install dev dependencies: TypeScript, vite, `@types/chrome`
+- [x] Set up TypeScript config (`tsconfig.json`) targeting ES2020+ with strict mode
+- [x] Set up bundler config (vite) for building the extension
   - Entry points: content script, background service worker, (optional) popup
   - Output to `dist/` folder
 
@@ -84,7 +84,7 @@
   - `pnpm run build` — production build (minified, output to `dist/`)
   - `pnpm run dev` — watch mode for development
   - `pnpm run test` — run unit tests
-  - `pnpm run lint` — run ESLint
+  - `pnpm run lint` — run Biome
 - [ ] Copy `manifest.json` and icons to `dist/` during build
 - [ ] Test loading the unpacked extension in Chrome (`chrome://extensions` → Developer mode → Load unpacked)
 - [ ] Test loading in Firefox if desired (may need minor manifest changes)

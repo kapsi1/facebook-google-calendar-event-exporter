@@ -14,9 +14,7 @@
     "lint:fix": "biome check --write src/",
     "format": "biome format --write src/",
     "clean": "rimraf dist",
-    "package": "pnpm run build:release && bestzip facebook-google-calendar-exporter.zip dist/*",
-    "package:chrome": "pnpm run package",
-    "package:opera": "pnpm run package"
+    "package": "pnpm run build:release && cd dist && bestzip ../facebook-google-calendar-exporter.zip *"
   },
   "keywords": [
     "facebook",

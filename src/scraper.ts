@@ -97,29 +97,29 @@ function isElementVisible(el: Element): boolean {
   return true;
 }
 
-function findByBgPosition(x: string, y: string): HTMLElement | null {
-  const icons = document.querySelectorAll('i[data-visualcompletion="css-img"]');
+function findByBgPosition(x: string, y: string, container: HTMLElement | Document = document): HTMLElement | null {
+  const icons = container.querySelectorAll('i[data-visualcompletion="css-img"]');
   for (const i of icons) {
     const bg = (i as HTMLElement).style.backgroundPosition;
     if (bg?.includes(x) && bg?.includes(y)) {
-      const container = i.closest('[role="button"], [role="menuitem"], [role="link"]') as HTMLElement;
+      const parent = i.closest('[role="button"], [role="menuitem"], [role="link"]') as HTMLElement;
       // Skip if this part of the DOM is hidden
-      if (container && isElementVisible(container)) {
-        return container;
+      if (parent && isElementVisible(parent)) {
+        return parent;
       }
     }
   }
   return null;
 }
 
-function findBySvgPath(pathStart: string): HTMLElement | null {
-  const paths = document.querySelectorAll('path');
+function findBySvgPath(pathStart: string, container: HTMLElement | Document = document): HTMLElement | null {
+  const paths = container.querySelectorAll('path');
   for (const p of paths) {
     if (p.getAttribute('d')?.startsWith(pathStart)) {
-      const container = p.closest('[role="menuitem"], [role="button"]') as HTMLElement;
+      const parent = p.closest('[role="menuitem"], [role="button"]') as HTMLElement;
       // Skip if hidden
-      if (container && isElementVisible(container)) {
-        return container;
+      if (parent && isElementVisible(parent)) {
+        return parent;
       }
     }
   }
@@ -157,6 +157,18 @@ function getAccountButton() {
   return null;
 }
 
+function getCleanLanguageName(el: HTMLElement): string {
+  // In Facebook Comet UI, the primary language name is usually in the first span.
+  // If we take the whole textContent, we get "EspañolSpanish · Recent".
+  // The first span usually contains just "Español".
+  const firstSpan = el.querySelector('span');
+  if (firstSpan) {
+    const text = firstSpan.textContent?.trim();
+    if (text) return text;
+  }
+  return el.textContent?.split('\n')[0].trim() || 'Unknown';
+}
+
 function getLanguageListItems(): HTMLElement[] {
   // Try finding search inputs first
   const inputs = Array.from(document.querySelectorAll(
@@ -184,20 +196,40 @@ function getLanguageListItems(): HTMLElement[] {
   // If no suitable container is visible, return empty list (do NOT fallback to body)
   if (!listContainer) return [];
 
-  const items = Array.from(
-    listContainer.querySelectorAll('div[role="listitem"] div[role="button"], div[role="menuitem"]')
-  );
+  // Facebook uses role="option" for suggested languages in a role="listbox"
+  const rawItems = Array.from(
+    listContainer.querySelectorAll('div[role="listitem"] div[role="button"], div[role="menuitem"], [role="option"]')
+  ) as HTMLElement[];
   
-  return items.filter((el) => {
+  const seenTexts = new Set<string>();
+  const uniqueItems: HTMLElement[] = [];
+
+  for (const el of rawItems) {
     // Basic hygiene: visible, no search input inside it
-    if (!isElementVisible(el) || el.querySelector('input')) return false;
+    if (!isElementVisible(el) || el.querySelector('input')) continue;
     
     // Filter out common "Back" buttons in language selector
-    const text = el.textContent?.trim().toLowerCase() || "";
-    if (["wróć", "back"].includes(text) || text.includes("back to") || text.includes("wróć do")) return false;
+    const text = el.textContent?.trim() || "";
+    const lowerText = text.toLowerCase();
+    if (!text || ["wróć", "back"].includes(lowerText) || lowerText.includes("back to") || lowerText.includes("wróć do")) continue;
 
-    return true;
-  }) as HTMLElement[];
+    const cleanName = getCleanLanguageName(el);
+    const baseName = cleanName.toLowerCase();
+    
+    if (seenTexts.has(baseName)) continue;
+    seenTexts.add(baseName);
+
+    // If it's a role="option" LI, the actual clickable element is often a DIV inside it
+    let target = el;
+    const innerClickable = el.querySelector('[role="button"], [role="none"][tabindex]') as HTMLElement;
+    if (innerClickable) {
+      target = innerClickable;
+    }
+
+    uniqueItems.push(target);
+  }
+
+  return uniqueItems;
 }
 
 function extractModalStrings(): Record<string, string> {
@@ -338,8 +370,13 @@ async function runScraperStep(state: ScraperState) {
         break;
       }
       case 'SETTINGS_MENU': {
+        // Find current menu panel to search within it
+        const menus = Array.from(document.querySelectorAll('div[role="menu"], div[role="dialog"]'))
+          .filter(m => isElementVisible(m));
+        const activeMenu = menus[menus.length - 1];
+
         // -42px -348px is the gear icon for "Settings & privacy"
-        const settingsBtn = findByBgPosition('-42px', '-348px');
+        const settingsBtn = findByBgPosition('-42px', '-348px', activeMenu as HTMLElement || document);
         if (!settingsBtn) {
           console.warn('[Scraper] Settings button not found');
           setTimeout(() => runScraperStep(state), 2000);
@@ -362,8 +399,12 @@ async function runScraperStep(state: ScraperState) {
         break;
       }
       case 'LANGUAGE_MENU': {
+        const menus = Array.from(document.querySelectorAll('div[role="menu"], div[role="dialog"]'))
+          .filter(m => isElementVisible(m));
+        const activeMenu = menus[menus.length - 1];
+
         // Path M8.116 3.116
-        const langBtn = findBySvgPath('M8.116 3.116');
+        const langBtn = findBySvgPath('M8.116 3.116', activeMenu as HTMLElement || document);
         if (!langBtn) {
           console.warn('[Scraper] Language button not found');
           setTimeout(() => runScraperStep(state), 2000);
@@ -382,8 +423,15 @@ async function runScraperStep(state: ScraperState) {
         break;
       }
       case 'FB_LANGUAGE_MENU': {
+        const menus = Array.from(document.querySelectorAll('div[role="menu"], div[role="dialog"]'))
+          .filter(m => isElementVisible(m));
+        const activeMenu = (menus[menus.length - 1] as HTMLElement) || document;
+        const searchPath = activeMenu instanceof HTMLElement ? activeMenu : document;
+
         // 0px -235px (Globe) or 0px -108px (Right arrow)
-        const fbLangBtn = findByBgPosition('0px', '-235px') || findByBgPosition('0px', '-108px');
+        const fbLangBtn = findByBgPosition('0px', '-235px', searchPath) || 
+                          findByBgPosition('0px', '-108px', searchPath);
+        
         if (!fbLangBtn) {
           console.warn('[Scraper] Facebook Language button not found');
           setTimeout(() => runScraperStep(state), 2000);
@@ -393,6 +441,23 @@ async function runScraperStep(state: ScraperState) {
         const clickable = fbLangBtn.closest('[role="menuitem"], [role="button"]') as HTMLElement;
         const target = clickable || fbLangBtn;
         
+        // Detection: If we don't have a specific language name (just the "Initial" placeholder),
+        // try to detect it from the button text before clicking.
+        if (!state.currentLangName || state.currentLangName === 'Initial') {
+          const spans = Array.from(target.querySelectorAll('span'));
+          if (spans.length >= 2) {
+            const detectedValue = spans[spans.length - 1].textContent?.trim();
+            if (detectedValue) {
+               console.log('[Scraper] Detected current language from settings menu:', detectedValue);
+               if (state.results['Initial']) {
+                 state.results[detectedValue] = state.results['Initial'];
+                 delete state.results['Initial'];
+               }
+               state.currentLangName = detectedValue;
+            }
+          }
+        }
+
         target.dispatchEvent(new MouseEvent('click', {
           view: window,
           bubbles: true,
@@ -407,6 +472,21 @@ async function runScraperStep(state: ScraperState) {
             setTimeout(() => runScraperStep(state), 2000);
             return;
           }
+
+          // More precise detection: Look for aria-selected="true" in the list
+          const selectedOption = activeMenu.querySelector('[role="option"][aria-selected="true"]');
+          if (selectedOption) {
+            const listDetectedName = getCleanLanguageName(selectedOption as HTMLElement);
+            if (listDetectedName && (!state.currentLangName || state.currentLangName === 'Initial')) {
+               console.log('[Scraper] Detected current language from list selection:', listDetectedName);
+               if (state.results['Initial']) {
+                 state.results[listDetectedName] = state.results['Initial'];
+                 delete state.results['Initial'];
+               }
+               state.currentLangName = listDetectedName;
+            }
+          }
+
           state.maxLangs = items.length;
 
           if (state.langIndex >= state.maxLangs) {
@@ -417,9 +497,9 @@ async function runScraperStep(state: ScraperState) {
             return;
           }
 
-          const nextLangName = (items[state.langIndex].textContent || `Lang_${state.langIndex}`).trim();
+          const nextLangName = getCleanLanguageName(items[state.langIndex]);
           console.log(
-            `[Scraper] Clicking language ${state.langIndex}/${state.maxLangs}:`,
+            `[Scraper] Clicking language ${state.langIndex + 1}/${state.maxLangs}:`,
             nextLangName,
           );
 
@@ -427,12 +507,26 @@ async function runScraperStep(state: ScraperState) {
           state.phase = 'EVENT_PAGE';
           saveState(state);
           
-          // Click! This will reload the page
-          items[state.langIndex].dispatchEvent(new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: true
-          }));
+          const target = items[state.langIndex];
+          
+          // Robust click simulation
+          const opts = { view: window, bubbles: true, cancelable: true };
+          target.dispatchEvent(new MouseEvent('mousedown', opts));
+          target.dispatchEvent(new MouseEvent('mouseup', opts));
+          target.dispatchEvent(new MouseEvent('click', opts));
+
+          // Fallback in case the page doesn't reload
+          setTimeout(() => {
+            // Check if we are still on the same page (state would still be what we saved)
+            const currentState = localStorage.getItem('fb_lang_scraper');
+            if (currentState) {
+              const s = JSON.parse(currentState);
+              if (s.active && s.phase === 'EVENT_PAGE') {
+                console.log('[Scraper] Page didn\'t reload, manually triggering next step...');
+                runScraperStep(s);
+              }
+            }
+          }, 6000);
         }, 2000);
         break;
       }

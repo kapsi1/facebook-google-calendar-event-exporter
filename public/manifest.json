@@ -3,7 +3,7 @@
   "name": "Facebook to Google Calendar Exporter",
   "version": "1.0.0",
   "description": "Adds a 'Export to Google Calendar' option to Facebook's event export modal",
-  "permissions": ["activeTab", "downloads", "storage"],
+  "permissions": [],
   "host_permissions": ["https://www.facebook.com/*"],
   "content_scripts": [
     {

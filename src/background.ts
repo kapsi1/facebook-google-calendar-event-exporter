@@ -1,15 +1,7 @@
 import { buildGoogleCalendarUrl } from './gcal-url-builder';
 import { parseIcsEvent } from './ics-parser';
 
-let isIntercepting = false;
-
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message.action === 'START_INTERCEPT') {
-    isIntercepting = true;
-    console.log('[GCal Export] Started intercepting downloads.');
-    sendResponse({ success: true });
-  }
-
   if (message.action === 'FETCH_AND_OPEN') {
     // Directly fetch the ICS from a known URL and open Google Calendar
     fetchIcsAndOpenGcal(message.url);
@@ -20,29 +12,22 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return true;
 });
 
-chrome.downloads.onCreated.addListener((downloadItem) => {
-  if (!isIntercepting) return;
-
-  // Check if this looks like a Facebook ICS download
-  const url = downloadItem.url || '';
-  const filename = downloadItem.filename || '';
-  const isFacebookIcs =
-    (url.includes('facebook') || url.includes('fbcdn')) &&
-    (filename.endsWith('.ics') || url.includes('ical'));
-
-  if (!isFacebookIcs) return;
-
-  console.log('[GCal Export] Intercepted ICS download:', downloadItem);
-
-  // Cancel the native download
-  chrome.downloads.cancel(downloadItem.id);
-  isIntercepting = false;
-
-  fetchIcsAndOpenGcal(downloadItem.url);
-});
-
 async function fetchIcsAndOpenGcal(url: string) {
   try {
+    // Security check: only allow HTTPS URLs from facebook.com or its CDNs (fbcdn.net)
+    const parsedUrl = new URL(url);
+    const allowedDomains = ['facebook.com', 'fbcdn.net'];
+    const isAllowed = allowedDomains.some(
+      (domain) =>
+        parsedUrl.protocol === 'https:' &&
+        (parsedUrl.hostname === domain || parsedUrl.hostname.endsWith(`.${domain}`)),
+    );
+
+    if (!isAllowed) {
+      console.error('[GCal Export] Blocked attempt to fetch from unauthorized domain:', url);
+      return;
+    }
+
     console.log('[GCal Export] Fetching ICS from:', url);
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);

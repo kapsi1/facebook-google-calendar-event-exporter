@@ -80,13 +80,17 @@
 - [ ] Ensure the option looks native and doesn't cause layout shifts in the modal
 
 ## 8. Build & Package
-- [ ] Add npm scripts:
+- [x] Add npm scripts:
   - `pnpm run build` — production build (minified, output to `dist/`)
+  - `pnpm run build:release` — clean and build for production
   - `pnpm run dev` — watch mode for development
+  - `pnpm run package` — build and package into a zip for distribution
+  - `pnpm run package:chrome` — alias for package
+  - `pnpm run package:opera` — alias for package
   - `pnpm run test` — run unit tests
   - `pnpm run lint` — run Biome
-- [ ] Copy `manifest.json` and icons to `dist/` during build
-- [ ] Test loading the unpacked extension in Chrome (`chrome://extensions` → Developer mode → Load unpacked)
+- [x] Copy `manifest.json` and icons to `dist/` during build
+- [x] Test loading the unpacked extension in Chrome (`chrome://extensions` → Developer mode → Load unpacked)
 - [ ] Test loading in Firefox if desired (may need minor manifest changes)
 
 ## 9. Testing & QA

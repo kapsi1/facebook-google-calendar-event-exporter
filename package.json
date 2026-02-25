@@ -6,13 +6,17 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "build:release": "pnpm run clean && pnpm run build",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
     "format": "biome format --write src/",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "package": "pnpm run build:release && bestzip facebook-google-calendar-exporter.zip dist/*",
+    "package:chrome": "pnpm run package",
+    "package:opera": "pnpm run package"
   },
   "keywords": [
     "facebook",
@@ -27,6 +31,7 @@
     "@biomejs/biome": "^2.4.4",
     "@types/chrome": "^0.1.37",
     "@types/node": "^25.3.0",
+    "bestzip": "^2.2.1",
     "rimraf": "^6.1.3",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",

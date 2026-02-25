@@ -56,6 +56,9 @@ function injectHoverStyles() {
     #${GCAL_OPTION_ID} [role="button"]:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
+    html.__fb-light-mode #${GCAL_OPTION_ID} [role="button"]:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
   `;
   document.head.appendChild(style);
 }
@@ -291,7 +294,11 @@ function showNativeDotCover(nativeRow: HTMLElement) {
 
   // Get the actual background color from the dialog for a perfect match
   const dialog = nativeRow.closest('[role="dialog"]');
-  const bgColor = dialog ? window.getComputedStyle(dialog).backgroundColor : '#242526';
+  const isLightMode = document.documentElement.classList.contains('__fb-light-mode');
+  const fallbackBg = isLightMode ? '#ffffff' : '#242526';
+  const bgColor = dialog ? window.getComputedStyle(dialog).backgroundColor : fallbackBg;
+
+  const fallbackBorder = isLightMode ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.3)';
 
   cover.style.cssText = `
     position: absolute;
@@ -300,7 +307,7 @@ function showNativeDotCover(nativeRow: HTMLElement) {
     width: ${uncheckedDotSize || nativeDot.offsetWidth}px;
     height: ${uncheckedDotSize || nativeDot.offsetHeight}px;
     border-radius: 50%;
-    border: 2px solid ${uncheckedDotBorderColor || 'rgba(255, 255, 255, 0.3)'};
+    border: 2px solid ${uncheckedDotBorderColor || fallbackBorder};
     background: ${bgColor};
     box-sizing: border-box;
     pointer-events: none;

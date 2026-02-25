@@ -1,6 +1,3 @@
-import { buildGoogleCalendarUrl } from './gcal-url-builder';
-import { parseIcsEvent } from './ics-parser';
-
 // Lookups for English and Polish UI
 const TEXT_MATCHERS = {
   EXPORT_EVENT_TITLE: ['Eksportuj wydarzenie', 'Export Event'],
@@ -11,7 +8,7 @@ const TEXT_MATCHERS = {
 
 function getGcalText(matchedNativeText: string): string {
   return matchedNativeText === 'Dodaj do kalendarza'
-    ? 'Eksportuj do Google Calendar'
+    ? 'Eksportuj do kalendarza Google'
     : 'Export to Google Calendar';
 }
 
@@ -62,15 +59,25 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   if (!addToCalendarSpan || !matchedNativeText) return;
 
   // Traverse up to find the clickable radio button container
-  // Facebook's DOM is deeply nested div soup, so we traverse up a few levels until we find a div with role="radio" or similar clickable wrapper
-  const nativeRadioButton =
-    addToCalendarSpan.closest('[role="radio"]') ||
-    addToCalendarSpan.parentElement?.parentElement?.parentElement;
+  // Facebook's radio items are typically divs with role="button" containing the radio input
+  const nativeRadioButton = addToCalendarSpan.closest('[role="button"]') as HTMLElement;
 
   if (!nativeRadioButton || !nativeRadioButton.parentNode) return;
 
   // Clone the native radio button to keep Facebook's exact styling
   const gcalOption = nativeRadioButton.cloneNode(true) as HTMLElement;
+
+  // Find the input in our clone and uncheck it
+  const gcalInput = gcalOption.querySelector('input[type="radio"]') as HTMLInputElement;
+  if (gcalInput) {
+    gcalInput.checked = false;
+    gcalInput.setAttribute('aria-checked', 'false');
+    gcalInput.name = 'gcal_export'; // Avoid conflict with native names
+  }
+
+  // Uncheck visual state by default
+  // (Visual maintenance is now handled in setupRadioBehavior via templates)
+
 
   // Modify the cloned element to represent Google Calendar
   const textSpan = Array.from(gcalOption.querySelectorAll('span')).find(
@@ -84,104 +91,154 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   nativeRadioButton.parentNode.insertBefore(gcalOption, nativeRadioButton.nextSibling);
   isOptionInjected = true;
 
-  // Setup click listeners for the custom radio behavior since cloned nodes don't copy event listeners
-  setupRadioBehavior(dialog, nativeRadioButton as HTMLElement, gcalOption);
+  // Setup click listeners for the custom radio behavior
+  setupRadioBehavior(dialog, gcalOption);
   setupExportButtonInterceptor(dialog);
 }
 
-function setupRadioBehavior(dialog: HTMLElement, nativeRadio: HTMLElement, gcalRadio: HTMLElement) {
-  // By default, Gcal is not selected
+function setupRadioBehavior(dialog: HTMLElement, gcalRadio: HTMLElement) {
   isGcalSelected = false;
 
-  // Grab all radio options in the modal
-  const allRadios = Array.from(nativeRadio.parentNode?.children || []) as HTMLElement[];
+  // Find all radio-like containers in the modal.
+  // In the provided HTML, they are role="button" containing an input[type="radio"]
+  const getRadios = () => Array.from(dialog.querySelectorAll('[role="button"]'))
+    .filter(el => el.querySelector('input[type="radio"]')) as HTMLElement[];
+
+  const allRadios = getRadios();
+  
+  // Dynamically learn the class names for checked/unchecked states from native radios
+  let checkedClasses: string[] = [];
+  let uncheckedClasses: string[] = [];
+
+  const updateTemplates = () => {
+    const nativeRadios = getRadios().filter(r => r !== gcalRadio);
+    const checked = nativeRadios.find(r => (r.querySelector('input') as HTMLInputElement).checked);
+    const unchecked = nativeRadios.find(r => !(r.querySelector('input') as HTMLInputElement).checked);
+
+    if (checked) {
+      const dot = findInnerDot(checked);
+      if (dot) checkedClasses = Array.from(dot.classList);
+    }
+    if (unchecked) {
+      const dot = findInnerDot(unchecked);
+      if (dot) uncheckedClasses = Array.from(dot.classList);
+    }
+  };
+
+  updateTemplates();
 
   allRadios.forEach((radio) => {
     radio.addEventListener('click', (e) => {
-      // If the clicked radio is our custom Google Calendar one
       if (radio === gcalRadio) {
+        e.preventDefault();
+        e.stopPropagation();
         isGcalSelected = true;
-        // Visual trickery: make ours look checked, others look unchecked
-        // (This relies heavily on Facebook's specific SVG/CSS structure, might need tuning based on actual DOM)
-        updateRadioVisuals(allRadios, gcalRadio);
-        e.stopPropagation(); // Stop facebook scripts from getting confused by our custom radioactive button
+        
+        // Manually sync visuals since we stopped propagation
+        getRadios().forEach(r => {
+          const isOurTarget = r === gcalRadio;
+          const input = r.querySelector('input') as HTMLInputElement;
+          if (input) {
+            input.checked = isOurTarget;
+            input.setAttribute('aria-checked', isOurTarget ? 'true' : 'false');
+          }
+          const dot = findInnerDot(r);
+          if (dot) {
+            dot.className = (isOurTarget ? checkedClasses : uncheckedClasses).join(' ');
+          }
+        });
       } else {
+        // Native radio clicked
         isGcalSelected = false;
-        // Let Facebook handle checking their own, but ensure ours looks unchecked
-        updateRadioVisuals(allRadios, radio);
+        // Let Facebook handle the native selection logic, but we need to ensure our Gcal radio looks unchecked
+        setTimeout(() => {
+          const gcalDot = findInnerDot(gcalRadio);
+          if (gcalDot) gcalDot.className = uncheckedClasses.join(' ');
+          const gcalInput = gcalRadio.querySelector('input') as HTMLInputElement;
+          if (gcalInput) {
+            gcalInput.checked = false;
+            gcalInput.setAttribute('aria-checked', 'false');
+          }
+        }, 0);
       }
     });
   });
 }
 
-function updateRadioVisuals(allRadios: HTMLElement[], selectedRadio: HTMLElement) {
-  // Facebook usually uses an outer circle with a smaller inner blue circle for selected state.
-  // Assuming the inner circle is hidden/shown via opacity or DOM presence.
-  // This is a rough approximation that we will refine during visual testing
-  console.log('Selected radio:', selectedRadio);
+// Facebook's radio dots are typically the nested div with lots of classes
+function findInnerDot(container: HTMLElement): HTMLElement | null {
+  // It's the div inside the radio container that isn't a span/input and has a nested class structure
+  return container.querySelector('div[class*="x"] div[class*="x"]') as HTMLElement;
 }
 
 function setupExportButtonInterceptor(dialog: HTMLElement) {
-  // Find the Export button
-  const buttons = Array.from(dialog.querySelectorAll('div[role="button"]'));
-  const exportButton = buttons.find(
-    (b) => b.textContent && TEXT_MATCHERS.EXPORT_BUTTON.some((t) => b.textContent?.includes(t)),
-  );
+  // Find only the VISIBLE Export button
+  const getVisibleExportButton = () => {
+    const interactables = Array.from(dialog.querySelectorAll('div[role="button"], a[role="link"]'));
+    return interactables.find((b) => {
+      const hasText = b.textContent && TEXT_MATCHERS.EXPORT_BUTTON.some((t) => b.textContent?.includes(t));
+      // Element is visible and not aria-hidden
+      const style = window.getComputedStyle(b);
+      const isVisible = b.getClientRects().length > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+      const isAriaHidden = b.getAttribute('aria-hidden') === 'true' || b.closest('[aria-hidden="true"]');
+      return hasText && isVisible && !isAriaHidden;
+    }) as HTMLElement;
+  };
 
+  const exportButton = getVisibleExportButton();
   if (!exportButton) return;
 
   // Intercept clicks on the export button
-  exportButton.addEventListener(
-    'click',
-    (e) => {
-      if (isGcalSelected) {
-        // Prevent default Facebook export
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+  exportButton.addEventListener('click', (e) => {
+    if (isGcalSelected) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
 
-        executeGoogleCalendarExport();
+      executeGoogleCalendarExport();
 
-        // Optionally close the modal
-        const closeSelectors = TEXT_MATCHERS.CLOSE_BUTTON_ARIA.map(
-          (aria) => `div[aria-label="${aria}"]`,
-        ).join(', ');
-        const closeButton = dialog.querySelector(closeSelectors) as HTMLElement;
-        if (closeButton) closeButton.click();
-      }
-    },
-    true,
-  ); // Use capture phase to intercept before React
+      // Close the modal
+      const closeSelectors = TEXT_MATCHERS.CLOSE_BUTTON_ARIA.map((aria) => `div[aria-label="${aria}"]`).join(', ');
+      const closeButton = dialog.querySelector(closeSelectors) as HTMLElement;
+      if (closeButton) closeButton.click();
+    }
+  }, true);
 }
 
 function executeGoogleCalendarExport() {
-  // To get the .ics file, we have two options:
-  // 1. Tell our background worker to intercept the next download. (Hard, timing issues).
-  // 2. We can send a message to the background worker to trigger the fetch itself, OR grab it from the page if we can find the API endpoint.
-  // For now, let's use the Background worker download interception approach.
+  chrome.runtime.sendMessage({ action: 'START_INTERCEPT' }, (response) => {
+    if (response?.success) {
+      // Find the native "Add to calendar" option to trigger the download
+      const spans = Array.from(document.querySelectorAll('span'));
+      const addCalSpan = spans.find(
+        (s) => s.textContent && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(s.textContent),
+      );
+      const nativeRadio = addCalSpan?.closest('[role="button"]') as HTMLElement;
 
-  chrome.runtime.sendMessage({ action: 'START_INTERCEPT' });
+      if (nativeRadio) {
+        nativeRadio.click(); // Select native state in React
 
-  // Now, programmatically click the ACTUAL "Add to calendar" option and then Export, so Facebook generates the file.
-  // Wait, if we click export, Facebook triggers a download.
-  const dialogs = document.querySelectorAll('div[role="dialog"]');
-  const addCalSpan = Array.from(document.querySelectorAll('span')).find(
-    (s) => s.textContent && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(s.textContent),
-  );
-  const nativeRadio = addCalSpan?.closest('[role="radio"]') as HTMLElement;
+        setTimeout(() => {
+          // Find the visible export button again to click it
+          const dialog = nativeRadio.closest('[role="dialog"]');
+          if (!dialog) return;
 
-  if (nativeRadio) {
-    nativeRadio.click(); // Select native
+          const interactables = Array.from(dialog.querySelectorAll('div[role="button"], a[role="link"]'));
+          const exportBtn = interactables.find((b) => {
+            const hasText = b.textContent && TEXT_MATCHERS.EXPORT_BUTTON.some((t) => b.textContent?.includes(t));
+            const style = window.getComputedStyle(b);
+            const isVisible = b.getClientRects().length > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+            const isAriaHidden = b.getAttribute('aria-hidden') === 'true' || b.closest('[aria-hidden="true"]');
+            return hasText && isVisible && !isAriaHidden;
+          }) as HTMLElement;
 
-    setTimeout(() => {
-      const exportBtn = Array.from(document.querySelectorAll('div[role="button"]')).find(
-        (b) => b.textContent && TEXT_MATCHERS.EXPORT_BUTTON.some((t) => b.textContent?.includes(t)),
-      ) as HTMLElement;
-      if (exportBtn) {
-        exportBtn.click(); // Export! Background worker will catch the download.
+          if (exportBtn) {
+            exportBtn.click(); // Triggers the actual download
+          }
+        }, 150);
       }
-    }, 100);
-  }
+    }
+  });
 }
 
 // Reset state when modal closes

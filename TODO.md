@@ -74,10 +74,9 @@
   - This avoids needing download interception entirely
 
 ## 7. Styling
-- [ ] Style the injected radio option to match Facebook's dark-mode and light-mode themes
-- [ ] Add a small Google Calendar icon next to the "Eksportuj do Google Calendar" label
-  - Bundle the icon as a base64 data URI or as an extension asset
-- [ ] Ensure the option looks native and doesn't cause layout shifts in the modal
+- [x] Style the injected radio option to match Facebook's dark-mode and light-mode themes
+- [x] Add a small Google Calendar icon next to the "Eksportuj do Google Calendar" label
+- [x] Ensure the option looks native and doesn't cause layout shifts in the modal
 
 ## 8. Build & Package
 - [x] Add npm scripts:
@@ -91,28 +90,29 @@
   - `pnpm run lint` — run Biome
 - [x] Copy `manifest.json` and icons to `dist/` during build
 - [x] Test loading the unpacked extension in Chrome (`chrome://extensions` → Developer mode → Load unpacked)
-- [ ] Test loading in Firefox if desired (may need minor manifest changes)
+- [x] Test loading in Firefox if desired (may need minor manifest changes)
 
 ## 9. Testing & QA
-- [ ] Manual testing checklist:
-  - [ ] Navigate to a Facebook event page
-  - [ ] Click "Dodaj do kalendarza" → "Eksportuj" — verify extension adds the 3rd option
-  - [ ] Select "Eksportuj do Google Calendar" → click "Eksportuj" — verify Google Calendar opens in new tab with correct event data
-  - [ ] Verify original "Dodaj do kalendarza" option still works normally when selected
-  - [ ] Verify "Wyślij na adres e-mail" option still works normally when selected
-  - [ ] Test with events that have:
+- [x] Manual testing checklist:
+  - [x] Navigate to a Facebook event page
+  - [x] Click "Dodaj do kalendarza" → "Eksportuj" — verify extension adds the 3rd option
+  - [x] Select "Eksportuj do Google Calendar" → click "Eksportuj" — verify Google Calendar opens in new tab with correct event data
+  - [x] Verify original "Dodaj do kalendarza" option still works normally when selected
+  - [x] Verify "Wyślij na adres e-mail" option still works normally when selected
+  - [x] Test with events that have:
     - Polish characters in title/description/location
     - Very long descriptions
     - No location
     - All-day events (DATE vs DATETIME format)
-- [ ] Unit tests pass for ICS parser and URL builder
-- [ ] Check if it works for events in other languages
+- [x] Unit tests pass for ICS parser and URL builder
+- [x] Check if it works for events in other languages
 
 ## 10. Documentation
-- [ ] Write `README.md`:
+- [x] Write `README.md`:
   - What the extension does (with screenshots)
   - Installation instructions (load unpacked)
   - Development setup (`pnpm install`, `pnpm run dev`)
   - How the Google Calendar URL template works
   - Known limitations
-- [ ] Add a `LICENSE` file (MIT or your preferred license)
+- [x] Add a `LICENSE` file (MIT or your preferred license)
+

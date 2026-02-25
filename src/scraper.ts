@@ -78,14 +78,33 @@ function startScraper() {
   runScraperStep(state);
 }
 
+function isElementVisible(el: Element): boolean {
+  if (el.closest('[aria-hidden="true"]')) return false;
+  
+  // Facebook Comet UI uses inline styles to slide menus horizontally.
+  // The active menu has `transform: translateX(0%)` or no transform.
+  // The hidden ones have `transform: translateX(-100%)` or `translateX(100%)`.
+  if (el.closest('[style*="translateX(-100%)"], [style*="translateX(100%)"]')) {
+    return false;
+  }
+
+  const rect = el.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return false;
+  
+  // Reject if it's completely off-screen
+  if (rect.right <= 0 || rect.left >= window.innerWidth) return false;
+  
+  return true;
+}
+
 function findByBgPosition(x: string, y: string): HTMLElement | null {
   const icons = document.querySelectorAll('i[data-visualcompletion="css-img"]');
   for (const i of icons) {
     const bg = (i as HTMLElement).style.backgroundPosition;
     if (bg?.includes(x) && bg?.includes(y)) {
       const container = i.closest('[role="button"], [role="menuitem"], [role="link"]') as HTMLElement;
-      // Skip if this part of the DOM is hidden (e.g., hidden menu layer)
-      if (container && !container.closest('[aria-hidden="true"]')) {
+      // Skip if this part of the DOM is hidden
+      if (container && isElementVisible(container)) {
         return container;
       }
     }
@@ -99,7 +118,7 @@ function findBySvgPath(pathStart: string): HTMLElement | null {
     if (p.getAttribute('d')?.startsWith(pathStart)) {
       const container = p.closest('[role="menuitem"], [role="button"]') as HTMLElement;
       // Skip if hidden
-      if (container && !container.closest('[aria-hidden="true"]')) {
+      if (container && isElementVisible(container)) {
         return container;
       }
     }
@@ -139,31 +158,45 @@ function getAccountButton() {
 }
 
 function getLanguageListItems(): HTMLElement[] {
-  // Find search inputs specifically in visible dialogs or menus
+  // Try finding search inputs first
   const inputs = Array.from(document.querySelectorAll(
-    'input[placeholder*="anguag"], input[aria-label*="anguag"], input[role="textbox"]'
+    'input[placeholder*="anguag"], input[aria-label*="anguag"]'
   )) as HTMLInputElement[];
 
-  const searchInput = inputs.find(el => {
-    // Must be visible and not in a hidden container
-    const rect = el.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0 && !el.closest('[aria-hidden="true"]');
-  });
+  const searchInput = inputs.find(el => isElementVisible(el));
 
-  if (!searchInput) return [];
+  let listContainer: HTMLElement | null = null;
+  if (searchInput) {
+    listContainer = searchInput.closest('div[role="dialog"], div[role="menu"]') as HTMLElement;
+  }
 
-  // The list container is usually the closest dialog or menu
-  const listContainer =
-    searchInput.closest('div[role="dialog"], div[role="menu"]') || document.body;
+  // Active menu fallback for Comet UI without search input inside the menu
+  if (!listContainer) {
+    const containers = Array.from(document.querySelectorAll('div[role="menu"], div[role="dialog"]'))
+      .filter(m => isElementVisible(m));
+    
+    // Usually the last mounted visible container in the DOM is the active nested panel
+    if (containers.length > 0) {
+      listContainer = containers[containers.length - 1] as HTMLElement;
+    }
+  }
+
+  // If no suitable container is visible, return empty list (do NOT fallback to body)
+  if (!listContainer) return [];
 
   const items = Array.from(
     listContainer.querySelectorAll('div[role="listitem"] div[role="button"], div[role="menuitem"]')
   );
   
-  // Filter out the search input itself and ensuring it's not hidden
   return items.filter((el) => {
-    const rect = el.getBoundingClientRect();
-    return !el.querySelector('input') && rect.width > 0 && rect.height > 0;
+    // Basic hygiene: visible, no search input inside it
+    if (!isElementVisible(el) || el.querySelector('input')) return false;
+    
+    // Filter out common "Back" buttons in language selector
+    const text = el.textContent?.trim().toLowerCase() || "";
+    if (["wróć", "back"].includes(text) || text.includes("back to") || text.includes("wróć do")) return false;
+
+    return true;
   }) as HTMLElement[];
 }
 

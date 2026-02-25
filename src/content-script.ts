@@ -9,15 +9,21 @@ const TEXT_MATCHERS = {
   CLOSE_BUTTON_ARIA: ['Zamknij', 'Close'],
 };
 
+/*
 const GCAL_OPTION_ID = 'gcal-export-option';
+let isGcalSelected = false;
+*/
 
+let isOptionInjected = false;
+
+/*
 function getGcalText(lang: 'pl' | 'en'): string {
   return lang === 'pl' ? 'Eksportuj do kalendarza Google' : 'Export to Google Calendar';
 }
+*/
 
-let isOptionInjected = false;
-let isGcalSelected = false;
 // Stores the checked/unchecked className for the radio dot, learned dynamically
+/*
 let dotCheckedClassName = '';
 let dotUncheckedClassName = '';
 // Stores the inner dot HTML (the filled circle that appears when checked)
@@ -46,6 +52,7 @@ function injectHoverStyles() {
   `;
   document.head.appendChild(style);
 }
+*/
 
 // Observe body for modal injections
 const observer = new MutationObserver((mutations) => {
@@ -59,7 +66,9 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 function checkForExportModal() {
   if (isOptionInjected) return;
-
+  // TEMPORARY: Stop adding the "Add to Google Calendar" option
+  return;
+  /*
   const dialogs = document.querySelectorAll('div[role="dialog"]');
   for (const dialog of dialogs) {
     const isExportModal = Array.from(dialog.querySelectorAll('span')).some(
@@ -71,8 +80,10 @@ function checkForExportModal() {
       break;
     }
   }
+  */
 }
 
+/*
 function injectGoogleCalendarOption(dialog: HTMLElement) {
   // Detect language
   const allSpans = Array.from(dialog.querySelectorAll('span'));
@@ -163,18 +174,6 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   setupGcalInteraction(dialog, gcalSection, calendarRow);
 }
 
-/**
- * Find the radio dot element — the outer circle div that changes classes for checked/unchecked.
- * DOM structure inside role="button":
- *   div.html-div (row content)
- *     > div (radio circle area)
- *       > div.html-div (OUTER CIRCLE — this toggles checked/unchecked classes)
- *         > div.html-div (INNER DOT — only visible when checked)
- *       > div[role="none"] (circle-area hover overlay)
- *       > input[type="radio"]
- *     > label > span (text)
- *   div[role="none"] (row-level hover overlay, opacity toggles on hover)
- */
 function findRadioDot(radioRow: HTMLElement): HTMLElement | null {
   const input = radioRow.querySelector('input[type="radio"]');
   if (!input || !input.parentElement) return null;
@@ -275,10 +274,6 @@ function setupGcalInteraction(
   setupExportInterception(dialog);
 }
 
-/**
- * Place an absolutely-positioned unfilled circle over the native checked dot
- * to visually "uncheck" it without modifying React's DOM.
- */
 function showNativeDotCover(nativeRow: HTMLElement) {
   if (document.getElementById(DOT_COVER_ID)) return;
 
@@ -364,7 +359,9 @@ function setupExportInterception(dialog: HTMLElement) {
     true,
   );
 }
+*/
 
+/*
 // Reset state when modal is removed from DOM
 const resetObserver = new MutationObserver(() => {
   if (!isOptionInjected) return;
@@ -383,5 +380,6 @@ const resetObserver = new MutationObserver(() => {
   }
 });
 resetObserver.observe(document.body, { childList: true, subtree: true });
+*/
 
 initScraper();

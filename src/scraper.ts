@@ -10,10 +10,8 @@ export interface ScraperState {
     | 'FB_LANGUAGE_MENU';
   langIndex: number;
   maxLangs: number;
-  results: {
-    langName: string;
-    strings: string[];
-  }[];
+  currentLangName?: string;
+  results: Record<string, Record<string, string>>;
 }
 
 let isScraperStopped = false;
@@ -74,7 +72,7 @@ function startScraper() {
     phase: 'INIT',
     langIndex: 0,
     maxLangs: 999,
-    results: [],
+    results: {},
   };
   saveState(state);
   runScraperStep(state);
@@ -85,7 +83,11 @@ function findByBgPosition(x: string, y: string): HTMLElement | null {
   for (const i of icons) {
     const bg = (i as HTMLElement).style.backgroundPosition;
     if (bg?.includes(x) && bg?.includes(y)) {
-      return i.closest('[role="button"], [role="menuitem"], [role="link"]') as HTMLElement;
+      const container = i.closest('[role="button"], [role="menuitem"], [role="link"]') as HTMLElement;
+      // Skip if this part of the DOM is hidden (e.g., hidden menu layer)
+      if (container && !container.closest('[aria-hidden="true"]')) {
+        return container;
+      }
     }
   }
   return null;
@@ -95,56 +97,117 @@ function findBySvgPath(pathStart: string): HTMLElement | null {
   const paths = document.querySelectorAll('path');
   for (const p of paths) {
     if (p.getAttribute('d')?.startsWith(pathStart)) {
-      return p.closest('[role="menuitem"], [role="button"]') as HTMLElement;
+      const container = p.closest('[role="menuitem"], [role="button"]') as HTMLElement;
+      // Skip if hidden
+      if (container && !container.closest('[aria-hidden="true"]')) {
+        return container;
+      }
     }
   }
   return null;
 }
 
 function getAccountButton() {
+  // Use the exact obfuscated class Facebook uses for the profile picture SVG in the top bar
+  const exactSvg = document.querySelector('svg.x3ajldb');
+  if (exactSvg) {
+    return exactSvg.closest('[role="button"], [role="link"]') as HTMLElement;
+  }
+
   const banner = document.querySelector('div[role="banner"]');
   if (!banner) return null;
-  // Account button is typically the last element with an svg having mask in banner
-  const svg = document.evaluate(
-    './/svg[mask]',
-    banner,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null,
-  ).singleNodeValue as HTMLElement;
-  if (svg) return svg.closest('[role="button"]') as HTMLElement;
+
+  // Account button is typically an SVG containing an <image> element for the profile picture
+  // or a <mask> element for the circular crop.
+  const svgWithMask = banner.querySelector('svg mask');
+  if (svgWithMask) {
+    return svgWithMask.closest('[role="button"]') as HTMLElement;
+  }
+
+  const svgWithImage = banner.querySelector('svg image');
+  if (svgWithImage) {
+    return svgWithImage.closest('[role="button"]') as HTMLElement;
+  }
+
+  // Fallback: The last button in the banner is usually the account button
+  const buttons = Array.from(banner.querySelectorAll('div[role="button"]'));
+  if (buttons.length > 0) {
+    return buttons[buttons.length - 1] as HTMLElement;
+  }
+
   return null;
 }
 
 function getLanguageListItems(): HTMLElement[] {
-  const searchInput = document.querySelector(
-    'input[placeholder="Search languages"], input[aria-label*="anguage"], input[role="textbox"]',
-  );
+  // Find search inputs specifically in visible dialogs or menus
+  const inputs = Array.from(document.querySelectorAll(
+    'input[placeholder*="anguag"], input[aria-label*="anguag"], input[role="textbox"]'
+  )) as HTMLInputElement[];
+
+  const searchInput = inputs.find(el => {
+    // Must be visible and not in a hidden container
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0 && !el.closest('[aria-hidden="true"]');
+  });
+
   if (!searchInput) return [];
+
+  // The list container is usually the closest dialog or menu
   const listContainer =
-    searchInput.closest('div[role="dialog"], div[role="menu"], div[role="main"]') || document.body;
+    searchInput.closest('div[role="dialog"], div[role="menu"]') || document.body;
+
   const items = Array.from(
-    listContainer.querySelectorAll('div[role="listitem"] div[role="button"], div[role="menuitem"]'),
+    listContainer.querySelectorAll('div[role="listitem"] div[role="button"], div[role="menuitem"]')
   );
-  return items.filter((el) => !el.querySelector('input[role="textbox"]')) as HTMLElement[];
+  
+  // Filter out the search input itself and ensuring it's not hidden
+  return items.filter((el) => {
+    const rect = el.getBoundingClientRect();
+    return !el.querySelector('input') && rect.width > 0 && rect.height > 0;
+  }) as HTMLElement[];
 }
 
-function extractModalStrings(): string[] {
+function extractModalStrings(): Record<string, string> {
   const dialog = document.querySelector('div[role="dialog"]');
-  if (!dialog) return [];
+  if (!dialog) return {};
 
-  const texts = new Set<string>();
-  const walker = document.createTreeWalker(dialog, NodeFilter.SHOW_TEXT, null);
-  let node = walker.nextNode();
-  while (node) {
-    const val = node.nodeValue?.trim();
-    if (val && val.length > 1) {
-      // Skip empty / single chars like 'X'
-      texts.add(val);
-    }
-    node = walker.nextNode();
+  const res: Record<string, string> = {};
+  
+  // 1. Header -> EXPORT_EVENT_TITLE
+  const header = dialog.querySelector('h2');
+  if (header?.textContent) {
+    res.EXPORT_EVENT_TITLE = header.textContent.trim();
   }
-  return Array.from(texts);
+
+  // 2. Labels -> ADD_TO_CALENDAR, SEND_TO_EMAIL
+  // These are labels for radio buttons.
+  const labels = Array.from(dialog.querySelectorAll('label span'));
+  if (labels.length >= 2) {
+    res.ADD_TO_CALENDAR = labels[0].textContent?.trim() || '';
+    res.SEND_TO_EMAIL = labels[labels.length - 1].textContent?.trim() || '';
+  }
+
+  // 3. Export button text -> EXPORT_BUTTON
+  // Usually in the footer, inside a link (since it downloads an ICS).
+  const exportBtnLink = dialog.querySelector('a[role="link"] span');
+  if (exportBtnLink?.textContent) {
+    res.EXPORT_BUTTON = exportBtnLink.textContent.trim();
+  }
+
+  // 4. Close aria-label -> CLOSE_BUTTON_ARIA
+  // It's a button at the top usually.
+  const closeBtn = Array.from(dialog.querySelectorAll('div[role="button"][aria-label]'))
+    .find(el => {
+      const aria = el.getAttribute('aria-label');
+      return aria && aria.length < 20 && !aria.includes(res.EXPORT_BUTTON || "___");
+    });
+    
+  if (closeBtn) {
+    const aria = closeBtn.getAttribute('aria-label');
+    if (aria) res.CLOSE_BUTTON_ARIA = aria;
+  }
+
+  return res;
 }
 
 function downloadResults(results: ScraperState['results']) {
@@ -171,20 +234,28 @@ async function runScraperStep(state: ScraperState) {
           console.error('[Scraper] Could not find ... button');
           return;
         }
-        moreBtn.click();
+        moreBtn.dispatchEvent(new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        }));
 
         state.phase = 'MODAL_OPEN';
         saveState(state);
-        setTimeout(() => runScraperStep(state), 1000);
+        setTimeout(() => runScraperStep(state), 2000);
         break;
       }
       case 'MODAL_OPEN': {
         const addToCalBtn = findByBgPosition('0px', '-293px');
         if (addToCalBtn) {
-          addToCalBtn.click();
+          addToCalBtn.dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          }));
         } else {
           console.warn('[Scraper] Add to calendar button not found yet');
-          setTimeout(() => runScraperStep(state), 1000);
+          setTimeout(() => runScraperStep(state), 1500);
           return;
         }
 
@@ -193,44 +264,68 @@ async function runScraperStep(state: ScraperState) {
           console.log('[Scraper] Extracted:', strings);
 
           const closeBtn = findByBgPosition('0px', '-548px');
-          if (closeBtn) closeBtn.click();
+          if (closeBtn) {
+            closeBtn.dispatchEvent(new MouseEvent('click', {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            }));
+          }
 
-          state.results.push({
-            langName: `Lang_${state.langIndex}`,
-            strings,
-          });
+          // Save results to the language name we decided on in the previous phase
+          const langName = state.currentLangName || "Initial";
+          state.results[langName] = strings;
+          console.log(`[Scraper] Saved results for: ${langName}`);
 
           state.phase = 'ACCOUNT_MENU';
+          state.langIndex++; // Move to next lang for next iteration
           saveState(state);
-          setTimeout(() => runScraperStep(state), 1500);
-        }, 1500);
+          setTimeout(() => runScraperStep(state), 2000);
+        }, 2000);
         break;
       }
       case 'ACCOUNT_MENU': {
         const accountBtn = getAccountButton();
         if (!accountBtn) {
           console.warn('[Scraper] Account button not found');
-          // Retry logic could go here
+          setTimeout(() => runScraperStep(state), 2000);
           return;
         }
-        accountBtn.click();
+        
+        // Use dispatchEvent for better React handling
+        accountBtn.dispatchEvent(new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        }));
+        
         state.phase = 'SETTINGS_MENU';
         saveState(state);
-        setTimeout(() => runScraperStep(state), 1000);
+        setTimeout(() => runScraperStep(state), 2000);
         break;
       }
       case 'SETTINGS_MENU': {
-        // -42px -348px
+        // -42px -348px is the gear icon for "Settings & privacy"
         const settingsBtn = findByBgPosition('-42px', '-348px');
         if (!settingsBtn) {
           console.warn('[Scraper] Settings button not found');
-          setTimeout(() => runScraperStep(state), 1000);
+          setTimeout(() => runScraperStep(state), 2000);
           return;
         }
-        settingsBtn.click();
+        
+        // Ensure we are clicking the right role
+        const clickable = settingsBtn.closest('[role="menuitem"], [role="button"]') as HTMLElement;
+        const target = clickable || settingsBtn;
+        
+        target.dispatchEvent(new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        }));
+        
         state.phase = 'LANGUAGE_MENU';
         saveState(state);
-        setTimeout(() => runScraperStep(state), 1000);
+        setTimeout(() => runScraperStep(state), 2000);
         break;
       }
       case 'LANGUAGE_MENU': {
@@ -238,34 +333,48 @@ async function runScraperStep(state: ScraperState) {
         const langBtn = findBySvgPath('M8.116 3.116');
         if (!langBtn) {
           console.warn('[Scraper] Language button not found');
-          setTimeout(() => runScraperStep(state), 1000);
+          setTimeout(() => runScraperStep(state), 2000);
           return;
         }
-        langBtn.click();
+        
+        langBtn.dispatchEvent(new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        }));
+        
         state.phase = 'FB_LANGUAGE_MENU';
         saveState(state);
-        setTimeout(() => runScraperStep(state), 1000);
+        setTimeout(() => runScraperStep(state), 2000);
         break;
       }
       case 'FB_LANGUAGE_MENU': {
-        // 0px -235px
-        const fbLangBtn = findByBgPosition('0px', '-235px');
+        // 0px -235px (Globe) or 0px -108px (Right arrow)
+        const fbLangBtn = findByBgPosition('0px', '-235px') || findByBgPosition('0px', '-108px');
         if (!fbLangBtn) {
           console.warn('[Scraper] Facebook Language button not found');
-          setTimeout(() => runScraperStep(state), 1000);
+          setTimeout(() => runScraperStep(state), 2000);
           return;
         }
-        fbLangBtn.click();
+        
+        const clickable = fbLangBtn.closest('[role="menuitem"], [role="button"]') as HTMLElement;
+        const target = clickable || fbLangBtn;
+        
+        target.dispatchEvent(new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        }));
 
         // Wait for language list to open
         setTimeout(() => {
           const items = getLanguageListItems();
           if (items.length === 0) {
             console.warn('[Scraper] No languages found');
+            setTimeout(() => runScraperStep(state), 2000);
             return;
           }
           state.maxLangs = items.length;
-          state.langIndex++;
 
           if (state.langIndex >= state.maxLangs) {
             console.log('[Scraper] Finished all languages!', state.results);
@@ -275,20 +384,23 @@ async function runScraperStep(state: ScraperState) {
             return;
           }
 
-          const nextLangName = items[state.langIndex].textContent || `Lang_${state.langIndex}`;
+          const nextLangName = (items[state.langIndex].textContent || `Lang_${state.langIndex}`).trim();
           console.log(
             `[Scraper] Clicking language ${state.langIndex}/${state.maxLangs}:`,
             nextLangName,
           );
 
-          state.results[state.results.length - 1].langName = nextLangName;
-
-          // Phase reset for next page reload
+          state.currentLangName = nextLangName;
           state.phase = 'EVENT_PAGE';
           saveState(state);
+          
           // Click! This will reload the page
-          items[state.langIndex].click();
-        }, 1500);
+          items[state.langIndex].dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          }));
+        }, 2000);
         break;
       }
     }

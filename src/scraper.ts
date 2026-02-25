@@ -272,7 +272,8 @@ function getLanguageListItems(): HTMLElement[] {
     // Filter out common "Back" buttons in language selector
     const text = el.textContent?.trim() || "";
     const lowerText = text.toLowerCase();
-    if (!text || ["wróć", "back"].includes(lowerText) || lowerText.includes("back to") || lowerText.includes("wróć do")) continue;
+    const backWords = ["wróć", "back", "atrás", "retour", "indietro", "zurück", "واپس", "رجوع"];
+    if (!text || backWords.some(w => lowerText === w) || lowerText.includes("back to") || lowerText.includes("wróć do")) continue;
 
     const cleanName = getCleanLanguageName(el);
     const baseName = cleanName.toLowerCase();
@@ -498,8 +499,13 @@ async function runScraperStep(state: ScraperState) {
           .filter(m => isElementVisible(m));
         const activeMenu = menus[menus.length - 1];
 
-        // Path M8.116 3.116
-        const langBtn = findBySvgPath('M8.116 3.116', activeMenu as HTMLElement || document);
+        // Primary: Globe icon (shared by LTR/RTL) 
+        // Secondary: Chevron (M8.116 LTR, M15.884 RTL)
+        const langBtn = 
+          findBySvgPath('M12 .5C5.649', activeMenu as HTMLElement || document) || 
+          findBySvgPath('M8.116 3.116', activeMenu as HTMLElement || document) ||
+          findBySvgPath('M15.884 3.116', activeMenu as HTMLElement || document);
+
         if (!langBtn) {
           console.warn('[Scraper] Language button not found');
           setTimeout(() => runScraperStep(state), 2000);
@@ -524,8 +530,11 @@ async function runScraperStep(state: ScraperState) {
         const searchPath = activeMenu instanceof HTMLElement ? activeMenu : document;
 
         // 0px -235px (Globe) or 0px -108px (Right arrow)
-        const fbLangBtn = findByBgPosition('0px', '-235px', searchPath) || 
-                          findByBgPosition('0px', '-108px', searchPath);
+        // Fallback to Globe SVG path which is used in some versions
+        const fbLangBtn = 
+          findByBgPosition('0px', '-235px', searchPath) || 
+          findByBgPosition('0px', '-108px', searchPath) ||
+          findBySvgPath('M12 .5C5.649', searchPath);
         
         if (!fbLangBtn) {
           console.warn('[Scraper] Facebook Language button not found');

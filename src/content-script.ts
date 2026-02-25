@@ -18,6 +18,25 @@ let isGcalSelected = false;
 // Stores the checked/unchecked className for the radio dot, learned dynamically
 let dotCheckedClassName = '';
 let dotUncheckedClassName = '';
+// Stores the inner dot HTML (the filled circle that appears when checked)
+let innerDotHtml = '';
+
+// Inject a CSS hover rule for our option. Facebook uses an overlay div that
+// toggles opacity — we replicate this purely via CSS so it's reliable.
+function injectHoverStyles() {
+  if (document.getElementById('gcal-ext-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'gcal-ext-styles';
+  style.textContent = `
+    #${GCAL_OPTION_ID} [role="button"] > [role="none"][data-visualcompletion="ignore"] {
+      transition: opacity 0.1s ease;
+    }
+    #${GCAL_OPTION_ID} [role="button"]:hover > [role="none"][data-visualcompletion="ignore"] {
+      opacity: 1 !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 // Observe body for modal injections
 const observer = new MutationObserver((mutations) => {
@@ -72,7 +91,13 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   // Learn the checked/unchecked dot class names from the existing native rows
   const checkedDot = findRadioDot(calendarRow);
   const uncheckedDot = findRadioDot(emailRow);
-  if (checkedDot) dotCheckedClassName = checkedDot.className;
+  if (checkedDot) {
+    dotCheckedClassName = checkedDot.className;
+    // The inner dot is the child div of the checked outer circle
+    if (checkedDot.firstElementChild) {
+      innerDotHtml = checkedDot.firstElementChild.outerHTML;
+    }
+  }
   if (uncheckedDot) dotUncheckedClassName = uncheckedDot.className;
 
   // Clone the EMAIL section (the unchecked one) — this gives us:
@@ -106,6 +131,9 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   // Insert between the two native sections
   calendarSection.parentElement.insertBefore(gcalSection, emailSection);
   isOptionInjected = true;
+
+  // Inject CSS hover styles
+  injectHoverStyles();
 
   // Setup interaction
   setupGcalInteraction(dialog, gcalSection);
@@ -141,33 +169,10 @@ function findRadioDot(radioRow: HTMLElement): HTMLElement | null {
   return null;
 }
 
-/**
- * Find the row-level hover overlay — the last child div of role="button" with role="none"
- * and data-visualcompletion="ignore". It has opacity 0 normally, 1 on hover.
- */
-function findHoverOverlay(radioRow: HTMLElement): HTMLElement | null {
-  // It's the last child of the role="button" element
-  const lastChild = radioRow.lastElementChild as HTMLElement;
-  if (lastChild?.getAttribute('role') === 'none' && lastChild?.getAttribute('data-visualcompletion') === 'ignore') {
-    return lastChild;
-  }
-  return null;
-}
 
 function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
   const gcalRow = gcalSection.querySelector('[role="button"]') as HTMLElement;
   if (!gcalRow) return;
-
-  // Setup hover effect by toggling the overlay's opacity (matching native behavior)
-  const hoverOverlay = findHoverOverlay(gcalRow);
-  if (hoverOverlay) {
-    gcalRow.addEventListener('mouseenter', () => {
-      hoverOverlay.style.opacity = '1';
-    });
-    gcalRow.addEventListener('mouseleave', () => {
-      hoverOverlay.style.opacity = '0';
-    });
-  }
 
   // Handle click on our Google Calendar option
   gcalRow.addEventListener(
@@ -180,10 +185,13 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
       if (isGcalSelected) return; // Already selected, don't trigger anything
       isGcalSelected = true;
 
-      // Update our dot to checked
+      // Update our dot to checked (className + insert inner dot child)
       const gcalDot = findRadioDot(gcalRow);
       if (gcalDot && dotCheckedClassName) {
         gcalDot.className = dotCheckedClassName;
+        if (innerDotHtml && !gcalDot.firstElementChild) {
+          gcalDot.insertAdjacentHTML('afterbegin', innerDotHtml);
+        }
       }
 
       // Update our input
@@ -206,6 +214,8 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
         const dot = findRadioDot(row as HTMLElement);
         if (dot && dotUncheckedClassName) {
           dot.className = dotUncheckedClassName;
+          // Remove inner dot child when unchecking
+          while (dot.firstChild) dot.removeChild(dot.firstChild);
         }
       });
     },
@@ -227,6 +237,8 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
         const gcalDot = findRadioDot(gcalRow);
         if (gcalDot && dotUncheckedClassName) {
           gcalDot.className = dotUncheckedClassName;
+          // Remove inner dot child
+          while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
         }
         const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
         if (gcalInput) {

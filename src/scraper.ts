@@ -12,6 +12,8 @@ export interface ScraperState {
   maxLangs: number;
   currentLangName?: string;
   results: Record<string, Record<string, string>>;
+  startTime?: number;
+  sessionStartIndex?: number;
 }
 
 const STORAGE_KEY = '__FB_EVENT_TRANS_SCRAPER_v1__';
@@ -37,6 +39,9 @@ export async function initScraper() {
     if (state) {
       console.log('[Scraper] Found existing state in chrome.storage:', state);
       if (state.active) {
+        if (state.sessionStartIndex === undefined) {
+          state.sessionStartIndex = state.langIndex;
+        }
         console.log('[Scraper] Resuming scraper in phase:', state.phase);
         isScraperStopped = false;
         // Add a slight delay to allow Facebook React to mount DOM
@@ -79,17 +84,59 @@ async function stopScraper() {
 }
 
 async function startScraper() {
-  console.log('[Scraper] Starting...');
+  console.log('[Scraper] Start/Resume requested...');
   isScraperStopped = false;
-  const state: ScraperState = {
-    active: true,
-    phase: 'INIT',
-    langIndex: 0,
-    maxLangs: 999,
-    results: {},
-  };
+
+  let state: ScraperState;
+  try {
+    const res = await chrome.storage.local.get(STORAGE_KEY);
+    const existing = res[STORAGE_KEY] as ScraperState;
+
+    if (existing && Object.keys(existing.results).length > 0) {
+      console.log(
+        `[Scraper] Resuming from existing state. Languages already done: ${
+          Object.keys(existing.results).length
+        }, Current index: ${existing.langIndex}`,
+      );
+      state = existing;
+      state.active = true;
+      // Reset to INIT phase so we start the flow from the current page even when resuming
+      state.phase = 'INIT';
+      state.startTime = Date.now();
+      state.sessionStartIndex = state.langIndex;
+    } else {
+      console.log('[Scraper] Starting fresh scraping session.');
+      state = {
+        active: true,
+        phase: 'INIT',
+        langIndex: 0,
+        maxLangs: 999,
+        results: {},
+        startTime: Date.now(),
+        sessionStartIndex: 0,
+      };
+    }
+  } catch (e) {
+    console.error('[Scraper] Failed to load existing state, starting fresh', e);
+    state = {
+      active: true,
+      phase: 'INIT',
+      langIndex: 0,
+      maxLangs: 999,
+      results: {},
+      startTime: Date.now(),
+    };
+  }
+
   await saveState(state);
   runScraperStep(state);
+}
+
+function formatDuration(ms: number): string {
+  const seconds = Math.floor((ms / 1000) % 60);
+  const minutes = Math.floor((ms / (1000 * 60)) % 60);
+  const hours = Math.floor(ms / (1000 * 60 * 60));
+  return `${hours}h ${minutes}m ${seconds}s`;
 }
 
 function isElementVisible(el: Element): boolean {
@@ -519,6 +566,20 @@ async function runScraperStep(state: ScraperState) {
             `[Scraper] Clicking language ${state.langIndex + 1}/${state.maxLangs}:`,
             nextLangName,
           );
+
+          if (state.startTime) {
+            const elapsed = Date.now() - state.startTime;
+            const processedInSession = state.langIndex - (state.sessionStartIndex || 0);
+
+            if (processedInSession > 0) {
+              const avg = elapsed / processedInSession;
+              const remaining = state.maxLangs - state.langIndex;
+              const estRemaining = avg * remaining;
+              console.log(
+                `[Scraper] Session elapsed: ${formatDuration(elapsed)} | Estimated remaining: ${formatDuration(estRemaining)}`,
+              );
+            }
+          }
 
           state.currentLangName = nextLangName;
           state.phase = 'EVENT_PAGE';

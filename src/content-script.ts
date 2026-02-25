@@ -22,6 +22,8 @@ let dotUncheckedClassName = '';
 let innerDotHtml = '';
 // Stores the ICS download URL captured at injection time
 let savedIcsUrl = '';
+// Flag to prevent our listener from resetting state on programmatic clicks
+let isProgrammaticClick = false;
 // Stores computed styles of the unchecked dot for the cover overlay
 let uncheckedDotBorderColor = '';
 let uncheckedDotSize = 0;
@@ -221,6 +223,12 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement, nat
         gcalInput.setAttribute('aria-checked', 'true');
       }
 
+      // Force React back to the "Calendar" state!
+      // This ensures the button text stays "Eksportuj" and unchecks Option 3 natively.
+      isProgrammaticClick = true;
+      nativeCalendarRow.click();
+      isProgrammaticClick = false;
+
       // Show a fake unfilled dot over the native checked dot
       showNativeDotCover(nativeCalendarRow);
     },
@@ -234,6 +242,9 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement, nat
     if (!row.querySelector('input[type="radio"]')) return;
 
     row.addEventListener('click', () => {
+      // Ignore programmatic clicks we trigger to force React state
+      if (isProgrammaticClick) return;
+
       if (!isGcalSelected) return;
       isGcalSelected = false;
 
@@ -321,7 +332,7 @@ function setupExportInterception(dialog: HTMLElement) {
         (target.closest('div[role="button"]') as HTMLElement);
       if (!clickedEl) return;
 
-      // Ensure this is an export button (not Cancel, Close, or a radio row)
+      // React changes the button text based on selection. It must contain EXPORT_BUTTON text.
       const hasExportText =
         clickedEl.textContent &&
         TEXT_MATCHERS.EXPORT_BUTTON.some((t) => clickedEl.textContent?.includes(t));

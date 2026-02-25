@@ -14,9 +14,11 @@ export interface ScraperState {
   results: Record<string, Record<string, string>>;
 }
 
+const STORAGE_KEY = '__FB_EVENT_TRANS_SCRAPER_v1__';
+
 let isScraperStopped = false;
 
-export function initScraper() {
+export async function initScraper() {
   if (typeof window === 'undefined') return;
 
   // Listen for keyboard shortcut (Alt + S for start, Alt + A for stop)
@@ -29,42 +31,54 @@ export function initScraper() {
     }
   });
 
-  const stateJson = localStorage.getItem('fb_lang_scraper');
-  if (stateJson) {
-    try {
-      const state: ScraperState = JSON.parse(stateJson);
+  try {
+    const res = await chrome.storage.local.get(STORAGE_KEY);
+    const state = res[STORAGE_KEY] as ScraperState;
+    if (state) {
+      console.log('[Scraper] Found existing state in chrome.storage:', state);
       if (state.active) {
         console.log('[Scraper] Resuming scraper in phase:', state.phase);
         isScraperStopped = false;
         // Add a slight delay to allow Facebook React to mount DOM
         setTimeout(() => runScraperStep(state), 3000); // 3 seconds to let Facebook load
       }
-    } catch (e) {
-      console.error('[Scraper] Failed to parse state', e);
+    } else {
+      console.log('[Scraper] No existing state found in chrome.storage');
     }
+  } catch (e) {
+    console.error('[Scraper] Failed to load state from chrome.storage', e);
   }
 }
 
-function saveState(state: ScraperState) {
-  localStorage.setItem('fb_lang_scraper', JSON.stringify(state));
+async function saveState(state: ScraperState) {
+  if (!state) return;
+  try {
+    await chrome.storage.local.set({ [STORAGE_KEY]: state });
+    console.log(`[Scraper] State saved to chrome.storage (active: ${state.active}, phase: ${state.phase})`);
+  } catch (e) {
+    console.error('[Scraper] Failed to save state to chrome.storage', e);
+  }
 }
 
-function stopScraper() {
-  console.log('[Scraper] Stopping...');
+async function stopScraper() {
+  console.log('[Scraper] Manual stop requested...');
   isScraperStopped = true;
-  const stateJson = localStorage.getItem('fb_lang_scraper');
-  if (stateJson) {
-    try {
-      const state: ScraperState = JSON.parse(stateJson);
+  try {
+    const res = await chrome.storage.local.get(STORAGE_KEY);
+    const state = res[STORAGE_KEY] as ScraperState;
+    if (state) {
       state.active = false;
-      saveState(state);
-    } catch (e) {
-      console.error('[Scraper] Failed to parse state for stopping', e);
+      await saveState(state);
+      console.log('[Scraper] Scraper marked as inactive in persistence.');
+    } else {
+      console.warn('[Scraper] Stop requested but no state found to update.');
     }
+  } catch (e) {
+    console.error('[Scraper] Failed to load state for stopping', e);
   }
 }
 
-function startScraper() {
+async function startScraper() {
   console.log('[Scraper] Starting...');
   isScraperStopped = false;
   const state: ScraperState = {
@@ -74,7 +88,7 @@ function startScraper() {
     maxLangs: 999,
     results: {},
   };
-  saveState(state);
+  await saveState(state);
   runScraperStep(state);
 }
 
@@ -289,6 +303,40 @@ async function runScraperStep(state: ScraperState) {
     console.log('[Scraper] Stopped via user request.');
     return;
   }
+
+  // --- Handling "Backup language" prompt ---
+  // If a dialog/menu is open while we are supposed to be on the EVENT_PAGE,
+  // it means we are stuck in a sub-selection (like Backup Language).
+  const openMenus = Array.from(document.querySelectorAll('div[role="dialog"], div[role="menu"]'))
+    .filter(m => isElementVisible(m));
+
+  if (openMenus.length > 0 && state.phase === 'EVENT_PAGE') {
+    console.log('[Scraper] Menu/Dialog found while in EVENT_PAGE phase. Assuming backup prompt.');
+    const items = getLanguageListItems();
+    const englishItem = items.find(item => {
+      const text = item.textContent?.toLowerCase() || '';
+      // English (US) and English (UK) are very common and reliable labels
+      return text.includes('english (us)') || 
+             text.includes('english (uk)') || 
+             text.includes('english(us)') ||
+             text.includes('angielski') || // Polish fallback
+             text.includes('inglés') || // Spanish fallback
+             text.includes('inglês'); // Portuguese fallback
+    });
+    
+    if (englishItem) {
+      console.log('[Scraper] Selecting English to bypass backup language prompt...');
+      const opts = { view: window, bubbles: true, cancelable: true };
+      englishItem.dispatchEvent(new MouseEvent('mousedown', opts));
+      englishItem.dispatchEvent(new MouseEvent('mouseup', opts));
+      englishItem.dispatchEvent(new MouseEvent('click', opts));
+      // Return and wait for page reload
+      return;
+    } else {
+      console.warn('[Scraper] Stuck in menu but could not find English option.');
+    }
+  }
+
   try {
     console.log('[Scraper] Running phase:', state.phase);
     switch (state.phase) {
@@ -306,7 +354,7 @@ async function runScraperStep(state: ScraperState) {
         }));
 
         state.phase = 'MODAL_OPEN';
-        saveState(state);
+        await saveState(state);
         setTimeout(() => runScraperStep(state), 2000);
         break;
       }
@@ -324,7 +372,7 @@ async function runScraperStep(state: ScraperState) {
           return;
         }
 
-        setTimeout(() => {
+        setTimeout(async () => {
           const strings = extractModalStrings();
           console.log('[Scraper] Extracted:', strings);
 
@@ -344,7 +392,7 @@ async function runScraperStep(state: ScraperState) {
 
           state.phase = 'ACCOUNT_MENU';
           state.langIndex++; // Move to next lang for next iteration
-          saveState(state);
+          await saveState(state);
           setTimeout(() => runScraperStep(state), 2000);
         }, 2000);
         break;
@@ -365,7 +413,7 @@ async function runScraperStep(state: ScraperState) {
         }));
         
         state.phase = 'SETTINGS_MENU';
-        saveState(state);
+        await saveState(state);
         setTimeout(() => runScraperStep(state), 2000);
         break;
       }
@@ -394,7 +442,7 @@ async function runScraperStep(state: ScraperState) {
         }));
         
         state.phase = 'LANGUAGE_MENU';
-        saveState(state);
+        await saveState(state);
         setTimeout(() => runScraperStep(state), 2000);
         break;
       }
@@ -418,7 +466,7 @@ async function runScraperStep(state: ScraperState) {
         }));
         
         state.phase = 'FB_LANGUAGE_MENU';
-        saveState(state);
+        await saveState(state);
         setTimeout(() => runScraperStep(state), 2000);
         break;
       }
@@ -448,7 +496,7 @@ async function runScraperStep(state: ScraperState) {
         }));
 
         // Wait for language list to open
-        setTimeout(() => {
+        setTimeout(async () => {
           const items = getLanguageListItems();
           if (items.length === 0) {
             console.warn('[Scraper] No languages found');
@@ -461,7 +509,7 @@ async function runScraperStep(state: ScraperState) {
           if (state.langIndex >= state.maxLangs) {
             console.log('[Scraper] Finished all languages!', state.results);
             state.active = false;
-            saveState(state);
+            await saveState(state);
             downloadResults(state.results);
             return;
           }
@@ -474,7 +522,7 @@ async function runScraperStep(state: ScraperState) {
 
           state.currentLangName = nextLangName;
           state.phase = 'EVENT_PAGE';
-          saveState(state);
+          await saveState(state);
           
           const target = items[state.langIndex];
           
@@ -485,15 +533,13 @@ async function runScraperStep(state: ScraperState) {
           target.dispatchEvent(new MouseEvent('click', opts));
 
           // Fallback in case the page doesn't reload
-          setTimeout(() => {
+          setTimeout(async () => {
             // Check if we are still on the same page (state would still be what we saved)
-            const currentState = localStorage.getItem('fb_lang_scraper');
-            if (currentState) {
-              const s = JSON.parse(currentState);
-              if (s.active && s.phase === 'EVENT_PAGE') {
-                console.log('[Scraper] Page didn\'t reload, manually triggering next step...');
-                runScraperStep(s);
-              }
+            const res = await chrome.storage.local.get(STORAGE_KEY);
+            const s = res[STORAGE_KEY] as ScraperState;
+            if (s?.active && s?.phase === 'EVENT_PAGE') {
+              console.log('[Scraper] Page didn\'t reload, manually triggering next step...');
+              runScraperStep(s);
             }
           }, 6000);
         }, 2000);

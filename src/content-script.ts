@@ -1,7 +1,4 @@
 import translations from './facebook_translations.json';
-import { initScraper } from './scraper';
-
-const INIT_SCRAPER = false;
 
 // Type helper for translations
 type LangCode = keyof typeof translations;
@@ -388,4 +385,4 @@ const resetObserver = new MutationObserver(() => {
 });
 resetObserver.observe(document.body, { childList: true, subtree: true });
 
-if(INIT_SCRAPER) initScraper();
+

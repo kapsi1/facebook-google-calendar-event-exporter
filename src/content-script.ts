@@ -1,3 +1,5 @@
+import { initScraper } from './scraper';
+
 // Lookups for English and Polish UI
 const TEXT_MATCHERS = {
   EXPORT_EVENT_TITLE: ['Eksportuj wydarzenie', 'Export Event'],
@@ -62,8 +64,7 @@ function checkForExportModal() {
   for (const dialog of dialogs) {
     const isExportModal = Array.from(dialog.querySelectorAll('span')).some(
       (span) =>
-        span.textContent &&
-        TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
+        span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
     );
     if (isExportModal) {
       injectGoogleCalendarOption(dialog as HTMLElement);
@@ -83,7 +84,8 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   );
   if (!calendarSpan || !emailSpan) return;
 
-  const lang: 'pl' | 'en' = calendarSpan.textContent?.trim() === 'Dodaj do kalendarza' ? 'pl' : 'en';
+  const lang: 'pl' | 'en' =
+    calendarSpan.textContent?.trim() === 'Dodaj do kalendarza' ? 'pl' : 'en';
 
   // Find the section wrappers.
   // Structure: dialog > sectionDiv > innerDiv > div[role="button"]
@@ -191,8 +193,11 @@ function findRadioDot(radioRow: HTMLElement): HTMLElement | null {
   return null;
 }
 
-
-function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement, nativeCalendarRow: HTMLElement) {
+function setupGcalInteraction(
+  dialog: HTMLElement,
+  gcalSection: HTMLElement,
+  nativeCalendarRow: HTMLElement,
+) {
   const gcalRow = gcalSection.querySelector('[role="button"]') as HTMLElement;
   if (!gcalRow) return;
 
@@ -289,9 +294,7 @@ function showNativeDotCover(nativeRow: HTMLElement) {
 
   // Get the actual background color from the dialog for a perfect match
   const dialog = nativeRow.closest('[role="dialog"]');
-  const bgColor = dialog
-    ? window.getComputedStyle(dialog).backgroundColor
-    : '#242526';
+  const bgColor = dialog ? window.getComputedStyle(dialog).backgroundColor : '#242526';
 
   cover.style.cssText = `
     position: absolute;
@@ -370,8 +373,7 @@ const resetObserver = new MutationObserver(() => {
   const isExportModalOpen = Array.from(dialogs).some((dialog) =>
     Array.from(dialog.querySelectorAll('span')).some(
       (span) =>
-        span.textContent &&
-        TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
+        span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
     ),
   );
 
@@ -381,3 +383,5 @@ const resetObserver = new MutationObserver(() => {
   }
 });
 resetObserver.observe(document.body, { childList: true, subtree: true });
+
+initScraper();

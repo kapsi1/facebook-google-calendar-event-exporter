@@ -1,0 +1,28 @@
+
+> facebook-google-calendar-event-exporter@1.0.0 lint
+> biome check src/
+
+C:\dev\facebook-google-calendar-event-exporter\biome.json:4:5 deserialize ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Found an unknown key `ignore`.
+  
+    2 │   "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+    3 │   "files": {
+  > 4 │     "ignore": ["resources/**"]
+      │     ^^^^^^^^
+    5 │   },
+    6 │   "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  
+  i Known keys:
+  
+  - maxSize
+  - ignoreUnknown
+  - includes
+  - experimentalScannerIgnores
+  
+
+configuration ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Biome exited because the configuration resulted in errors. Please fix them.
+  
+

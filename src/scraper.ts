@@ -16,13 +16,18 @@ export interface ScraperState {
   }[];
 }
 
+let isScraperStopped = false;
+
 export function initScraper() {
   if (typeof window === 'undefined') return;
 
-  // Listen for keyboard shortcut (Alt + S)
+  // Listen for keyboard shortcut (Alt + S for start, Alt + A for stop)
   window.addEventListener('keydown', (e) => {
     if (e.altKey && e.key.toLowerCase() === 's') {
       startScraper();
+    }
+    if (e.altKey && e.key.toLowerCase() === 'a') {
+      stopScraper();
     }
   });
 
@@ -32,6 +37,7 @@ export function initScraper() {
       const state: ScraperState = JSON.parse(stateJson);
       if (state.active) {
         console.log('[Scraper] Resuming scraper in phase:', state.phase);
+        isScraperStopped = false;
         // Add a slight delay to allow Facebook React to mount DOM
         setTimeout(() => runScraperStep(state), 3000); // 3 seconds to let Facebook load
       }
@@ -45,8 +51,24 @@ function saveState(state: ScraperState) {
   localStorage.setItem('fb_lang_scraper', JSON.stringify(state));
 }
 
+function stopScraper() {
+  console.log('[Scraper] Stopping...');
+  isScraperStopped = true;
+  const stateJson = localStorage.getItem('fb_lang_scraper');
+  if (stateJson) {
+    try {
+      const state: ScraperState = JSON.parse(stateJson);
+      state.active = false;
+      saveState(state);
+    } catch (e) {
+      console.error('[Scraper] Failed to parse state for stopping', e);
+    }
+  }
+}
+
 function startScraper() {
   console.log('[Scraper] Starting...');
+  isScraperStopped = false;
   const state: ScraperState = {
     active: true,
     phase: 'INIT',
@@ -135,6 +157,10 @@ function downloadResults(results: ScraperState['results']) {
 }
 
 async function runScraperStep(state: ScraperState) {
+  if (isScraperStopped) {
+    console.log('[Scraper] Stopped via user request.');
+    return;
+  }
   try {
     console.log('[Scraper] Running phase:', state.phase);
     switch (state.phase) {

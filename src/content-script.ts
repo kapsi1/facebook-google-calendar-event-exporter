@@ -20,19 +20,20 @@ let dotCheckedClassName = '';
 let dotUncheckedClassName = '';
 // Stores the inner dot HTML (the filled circle that appears when checked)
 let innerDotHtml = '';
+// Stores the ICS download URL captured at injection time
+let savedIcsUrl = '';
 
-// Inject a CSS hover rule for our option. Facebook uses an overlay div that
-// toggles opacity — we replicate this purely via CSS so it's reliable.
+// Inject CSS for our option's hover and cursor.
 function injectHoverStyles() {
   if (document.getElementById('gcal-ext-styles')) return;
   const style = document.createElement('style');
   style.id = 'gcal-ext-styles';
   style.textContent = `
-    #${GCAL_OPTION_ID} [role="button"] > [role="none"][data-visualcompletion="ignore"] {
-      transition: opacity 0.1s ease;
+    #${GCAL_OPTION_ID} [role="button"] {
+      cursor: pointer;
     }
-    #${GCAL_OPTION_ID} [role="button"]:hover > [role="none"][data-visualcompletion="ignore"] {
-      opacity: 1 !important;
+    #${GCAL_OPTION_ID} [role="button"]:hover {
+      background-color: rgba(255, 255, 255, 0.1);
     }
   `;
   document.head.appendChild(style);
@@ -132,6 +133,15 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   calendarSection.parentElement.insertBefore(gcalSection, emailSection);
   isOptionInjected = true;
 
+  // Save the ICS download URL now, while "Add to calendar" is still selected.
+  // If the user later clicks email, Facebook removes this link from the DOM.
+  const downloadLink = dialog.querySelector(
+    'a[download][href*="ical"], a[download][href*=".ics"]',
+  ) as HTMLAnchorElement;
+  if (downloadLink) {
+    savedIcsUrl = downloadLink.href;
+  }
+
   // Inject CSS hover styles
   injectHoverStyles();
 
@@ -201,23 +211,9 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
         gcalInput.setAttribute('aria-checked', 'true');
       }
 
-      // Uncheck all native radios visually
-      const nativeRows = dialog.querySelectorAll('[role="button"]');
-      nativeRows.forEach((row) => {
-        if (row === gcalRow) return;
-        const input = row.querySelector('input[type="radio"]') as HTMLInputElement;
-        if (!input) return;
-
-        input.checked = false;
-        input.setAttribute('aria-checked', 'false');
-
-        const dot = findRadioDot(row as HTMLElement);
-        if (dot && dotUncheckedClassName) {
-          dot.className = dotUncheckedClassName;
-          // Remove inner dot child when unchecking
-          while (dot.firstChild) dot.removeChild(dot.firstChild);
-        }
-      });
+      // NOTE: We do NOT modify native radio elements.
+      // The native "Dodaj do kalendarza" dot will still show as selected,
+      // but that's safe — modifying React-managed DOM causes crashes.
     },
     true,
   );
@@ -232,20 +228,18 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
       if (!isGcalSelected) return;
       isGcalSelected = false;
 
-      // Reset our radio to unchecked after a tick (let Facebook update its own first)
-      setTimeout(() => {
-        const gcalDot = findRadioDot(gcalRow);
-        if (gcalDot && dotUncheckedClassName) {
-          gcalDot.className = dotUncheckedClassName;
-          // Remove inner dot child
-          while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
-        }
-        const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
-        if (gcalInput) {
-          gcalInput.checked = false;
-          gcalInput.setAttribute('aria-checked', 'false');
-        }
-      }, 10);
+      // Reset only our own radio to unchecked
+      const gcalDot = findRadioDot(gcalRow);
+      if (gcalDot && dotUncheckedClassName) {
+        gcalDot.className = dotUncheckedClassName;
+        // Remove inner dot child
+        while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
+      }
+      const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
+      if (gcalInput) {
+        gcalInput.checked = false;
+        gcalInput.setAttribute('aria-checked', 'false');
+      }
     });
   });
 
@@ -282,13 +276,9 @@ function setupExportInterception(dialog: HTMLElement) {
       e.stopPropagation();
       e.stopImmediatePropagation();
 
-      // Get the ICS download URL directly from the <a download> link in the dialog
-      const downloadLink = dialog.querySelector(
-        'a[download][href*="ical"], a[download][href*=".ics"]',
-      ) as HTMLAnchorElement;
-      if (downloadLink) {
-        const icsUrl = downloadLink.href;
-        chrome.runtime.sendMessage({ action: 'FETCH_AND_OPEN', url: icsUrl });
+      // Use the ICS URL we saved at injection time
+      if (savedIcsUrl) {
+        chrome.runtime.sendMessage({ action: 'FETCH_AND_OPEN', url: savedIcsUrl });
       }
 
       // Close the modal

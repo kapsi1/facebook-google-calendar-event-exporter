@@ -4,631 +4,731 @@
     "CLOSE_BUTTON_ARIA": "Maak toe",
     "EXPORT_BUTTON": "Voer uit",
     "EXPORT_EVENT_TITLE": "Voer geleentheid uit",
-    "SEND_TO_EMAIL": "Stuur na e-posadres"
+    "SEND_TO_EMAIL": "Stuur na e-posadres",
+    "EXPORT_TO_GCAL": "Voer uit na Google Kalender"
   },
   "am": {
     "CLOSE_BUTTON_ARIA": "የቀድሞ ማሳወቂያዎችን ይመልከቱ",
     "EXPORT_BUTTON": "ሁሉንም ይመልከቱ",
-    "EXPORT_EVENT_TITLE": "አዲስ"
+    "EXPORT_EVENT_TITLE": "አዲስ",
+    "EXPORT_TO_GCAL": "ወደ Google ቀን መቁጠሪያ ላክ"
   },
   "as": {
     "CLOSE_BUTTON_ARIA": "জাননী কাৰ্য্যসমূহ",
     "EXPORT_BUTTON": "সকলো চাওক",
-    "EXPORT_EVENT_TITLE": "নতুন"
+    "EXPORT_EVENT_TITLE": "নতুন",
+    "EXPORT_TO_GCAL": "Google কেলেণ্ডাৰলৈ ৰপ্তানি কৰক"
   },
   "be": {
     "ADD_TO_CALENDAR": "Дадаць у каляндар",
     "CLOSE_BUTTON_ARIA": "Закрыць",
     "EXPORT_BUTTON": "Экспартаваць",
     "EXPORT_EVENT_TITLE": "Экспартаваць падзею",
-    "SEND_TO_EMAIL": "Даслаць на адрэсу электроннае пошты"
+    "SEND_TO_EMAIL": "Даслаць на адрэсу электроннае пошты",
+    "EXPORT_TO_GCAL": "Экспартаваць у Google Каляндар"
   },
   "ber": {
     "CLOSE_BUTTON_ARIA": "ⵜⵉⴳⴰⵡⵉⵏ ⵏ ⵜⵏⵖⵎⵉⵙⵜ",
     "EXPORT_BUTTON": "ⵥⵕ ⵎⴰⵕⵕⴰ",
-    "EXPORT_EVENT_TITLE": "ⴰⵎⴰⵢⵏⵓ"
+    "EXPORT_EVENT_TITLE": "ⴰⵎⴰⵢⵏⵓ",
+    "EXPORT_TO_GCAL": "ⵙⵉⴼⴹ ⵖⵔ Google Calendar"
   },
   "bg": {
     "ADD_TO_CALENDAR": "Добавяне в календара",
     "CLOSE_BUTTON_ARIA": "Затваряне",
     "EXPORT_BUTTON": "Експортиране",
     "EXPORT_EVENT_TITLE": "Експортиране на събитие",
-    "SEND_TO_EMAIL": "Изпращане на имейл"
+    "SEND_TO_EMAIL": "Изпращане на имейл",
+    "EXPORT_TO_GCAL": "Експортиране в Google Календар"
   },
   "bn": {
     "CLOSE_BUTTON_ARIA": "নোটিফিকেশন অ্যাকশন",
     "EXPORT_BUTTON": "সব দেখুন",
-    "EXPORT_EVENT_TITLE": "নতুন"
+    "EXPORT_EVENT_TITLE": "নতুন",
+    "EXPORT_TO_GCAL": "Google ক্যালেন্ডারে রপ্তানি করুন"
   },
   "br": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Serriñ",
     "EXPORT_BUTTON": "Esporzhiañ",
     "EXPORT_EVENT_TITLE": "Ezporzhiañ an darvoud",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Ezporzhiañ da Google Calendar"
   },
   "bs": {
     "ADD_TO_CALENDAR": "Dodaj u kalendar",
     "CLOSE_BUTTON_ARIA": "Zatvori",
     "EXPORT_BUTTON": "Izvoz",
     "EXPORT_EVENT_TITLE": "Izvezi događaje",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Izvezi u Google Kalendar"
   },
   "ca": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Tanca",
     "EXPORT_BUTTON": "Exporta",
     "EXPORT_EVENT_TITLE": "Exporta l'esdeveniment",
-    "SEND_TO_EMAIL": "Envia'l al correu electrònic"
+    "SEND_TO_EMAIL": "Envia'l al correu electrònic",
+    "EXPORT_TO_GCAL": "Exporta al Google Calendar"
   },
   "ceb": {
     "ADD_TO_CALENDAR": "Idugang sa Kalendaryo",
     "CLOSE_BUTTON_ARIA": "Isirado",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "I-export sa Google Calendar"
   },
   "ckb": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "داخستن",
     "EXPORT_BUTTON": "هەناردەکردن",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "بنێرە بۆ ئیمەیڵ"
+    "SEND_TO_EMAIL": "بنێرە بۆ ئیمەیڵ",
+    "EXPORT_TO_GCAL": "هەناردەکردن بۆ ڕۆژژمێری گووگڵ"
   },
   "co": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Chjode",
     "EXPORT_BUTTON": "Spurtà",
     "EXPORT_EVENT_TITLE": "Spurtà l'avvenimentu",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Esporta in Google Calendar"
   },
   "cs": {
     "ADD_TO_CALENDAR": "Přidat do kalendáře",
     "CLOSE_BUTTON_ARIA": "Zavřít",
     "EXPORT_BUTTON": "Exportovat",
     "EXPORT_EVENT_TITLE": "Exportovat událost",
-    "SEND_TO_EMAIL": "Poslat e-mailem"
+    "SEND_TO_EMAIL": "Poslat e-mailem",
+    "EXPORT_TO_GCAL": "Exportovat do Kalendáře Google"
   },
   "cy": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Cau",
     "EXPORT_BUTTON": "Allforio",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Allforio i Google Calendar"
   },
   "da": {
     "ADD_TO_CALENDAR": "Føj til kalender",
     "CLOSE_BUTTON_ARIA": "Luk",
     "EXPORT_BUTTON": "Eksportér",
     "EXPORT_EVENT_TITLE": "Eksportér begivenhed",
-    "SEND_TO_EMAIL": "Send til e-mail"
+    "SEND_TO_EMAIL": "Send til e-mail",
+    "EXPORT_TO_GCAL": "Eksporter til Google Kalender"
   },
   "de": {
     "ADD_TO_CALENDAR": "Zum Kalender hinzufügen",
     "CLOSE_BUTTON_ARIA": "Schließen",
     "EXPORT_BUTTON": "Exportieren",
     "EXPORT_EVENT_TITLE": "Veranstaltung exportieren",
-    "SEND_TO_EMAIL": "An E-Mail-Adresse senden"
+    "SEND_TO_EMAIL": "An E-Mail-Adresse senden",
+    "EXPORT_TO_GCAL": "In Google Kalender exportieren"
   },
   "el": {
     "ADD_TO_CALENDAR": "Προσθήκη στο ημερολόγιο",
     "CLOSE_BUTTON_ARIA": "Κλείσιμο",
     "EXPORT_BUTTON": "Εξαγωγή",
     "EXPORT_EVENT_TITLE": "Eξαγωγή εκδήλωσης",
-    "SEND_TO_EMAIL": "Αποστολή σε email"
+    "SEND_TO_EMAIL": "Αποστολή σε email",
+    "EXPORT_TO_GCAL": "Εξαγωγή στο Ημερολόγιο Google"
   },
   "en": {
     "ADD_TO_CALENDAR": "Add to Calendar",
     "CLOSE_BUTTON_ARIA": "Close",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Export event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Export to Google Calendar"
   },
   "eo": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Fermi",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Elportado de la okazaĵo",
-    "SEND_TO_EMAIL": "Sendi al retpoŝtadreso"
+    "SEND_TO_EMAIL": "Sendi al retpoŝtadreso",
+    "EXPORT_TO_GCAL": "Eksporti al Google Calendar"
   },
   "es": {
     "ADD_TO_CALENDAR": "Añadir al calendario",
     "CLOSE_BUTTON_ARIA": "Cerrar",
     "EXPORT_BUTTON": "Exportar",
     "EXPORT_EVENT_TITLE": "Exportar evento",
-    "SEND_TO_EMAIL": "Enviar a correo electrónico"
+    "SEND_TO_EMAIL": "Enviar a correo electrónico",
+    "EXPORT_TO_GCAL": "Exportar a Google Calendar"
   },
   "et": {
     "ADD_TO_CALENDAR": "Lisa kalendrisse",
     "CLOSE_BUTTON_ARIA": "Sule",
     "EXPORT_BUTTON": "Ekspordi",
     "EXPORT_EVENT_TITLE": "Ekspordi üritus",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Ekspordi Google'i kalendrisse"
   },
   "eu": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Itxi",
     "EXPORT_BUTTON": "Esportatu",
     "EXPORT_EVENT_TITLE": "Ekimenak esportatu",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Esportatu Google Calendarrera"
   },
   "fa": {
     "ADD_TO_CALENDAR": "افزودن به تقویم",
     "CLOSE_BUTTON_ARIA": "بستن",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "صادر کردن به تقویم گوگل"
   },
   "ff": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Uddu",
     "EXPORT_BUTTON": "Yaltiŋ",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Yaltiŋ e Google Calendar"
   },
   "fi": {
     "ADD_TO_CALENDAR": "Lisää kalenteriin",
     "CLOSE_BUTTON_ARIA": "Sulje",
     "EXPORT_BUTTON": "Vie",
     "EXPORT_EVENT_TITLE": "Vie tapahtuma",
-    "SEND_TO_EMAIL": "Lähetä sähköpostiin"
+    "SEND_TO_EMAIL": "Lähetä sähköpostiin",
+    "EXPORT_TO_GCAL": "Vie Google-kalenteriin"
   },
   "fil": {
     "ADD_TO_CALENDAR": "I-add sa Calendar",
     "CLOSE_BUTTON_ARIA": "Isara",
     "EXPORT_BUTTON": "I-export",
     "EXPORT_EVENT_TITLE": "I-export ang Event",
-    "SEND_TO_EMAIL": "Ipadala sa email"
+    "SEND_TO_EMAIL": "Ipadala sa email",
+    "EXPORT_TO_GCAL": "I-export sa Google Calendar"
   },
   "fo": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Lat Aftur",
     "EXPORT_BUTTON": "Flyt út",
     "EXPORT_EVENT_TITLE": "Flyt tiltaki út",
-    "SEND_TO_EMAIL": "Send til teldubústað"
+    "SEND_TO_EMAIL": "Send til teldubústað",
+    "EXPORT_TO_GCAL": "Flyt út til Google Kalendara"
   },
   "fr": {
     "ADD_TO_CALENDAR": "Ajouter au calendrier",
     "CLOSE_BUTTON_ARIA": "Fermer",
     "EXPORT_BUTTON": "Exporter",
     "EXPORT_EVENT_TITLE": "Exporter l’évènement",
-    "SEND_TO_EMAIL": "Envoyer par courriel"
+    "SEND_TO_EMAIL": "Envoyer par courriel",
+    "EXPORT_TO_GCAL": "Exporter vers Google Agenda"
   },
   "fur": {
     "ADD_TO_CALENDAR": "Zonte tal Calendari",
     "CLOSE_BUTTON_ARIA": "Siere",
     "EXPORT_BUTTON": "Esporta",
     "EXPORT_EVENT_TITLE": "Esporta evento",
-    "SEND_TO_EMAIL": "Invia a e-mail"
+    "SEND_TO_EMAIL": "Invia a e-mail",
+    "EXPORT_TO_GCAL": "Esporta in Google Calendar"
   },
   "fy": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Slute",
     "EXPORT_BUTTON": "Eksportearje",
     "EXPORT_EVENT_TITLE": "Evenemint eksportearje",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Eksportearje nei Google Calendar"
   },
   "ga": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Dún",
     "EXPORT_BUTTON": "Easpórtáil",
     "EXPORT_EVENT_TITLE": "Easpórtáil Ócáidí",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Easpórtáil go Google Calendar"
   },
   "gl": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Pechar",
     "EXPORT_BUTTON": "Exportar",
     "EXPORT_EVENT_TITLE": "Exportar o evento",
-    "SEND_TO_EMAIL": "Enviar por correo electrónico"
+    "SEND_TO_EMAIL": "Enviar por correo electrónico",
+    "EXPORT_TO_GCAL": "Exportar ao Google Calendar"
   },
   "gn": {
     "ADD_TO_CALENDAR": "Emoî Arapapahápe",
     "CLOSE_BUTTON_ARIA": "Emboty",
     "EXPORT_BUTTON": "Okápe guarãva",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Embosa Google Arapapahápe"
   },
   "gu": {
     "EXPORT_BUTTON": "બધું જુઓ",
-    "EXPORT_EVENT_TITLE": "નવું"
+    "EXPORT_EVENT_TITLE": "નવું",
+    "EXPORT_TO_GCAL": "Google કૅલેન્ડરમાં નિકાસ કરો"
   },
   "ha": {
     "ADD_TO_CALENDAR": "Ƙara Zuwa Kalanda",
     "CLOSE_BUTTON_ARIA": "Rufe",
     "EXPORT_BUTTON": "Fitar",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Fitar zuwa Google Calendar"
   },
   "hi": {
     "CLOSE_BUTTON_ARIA": "नोटिफ़िकेशन एक्शन",
     "EXPORT_BUTTON": "सभी देखें",
-    "EXPORT_EVENT_TITLE": "नए"
+    "EXPORT_EVENT_TITLE": "नए",
+    "EXPORT_TO_GCAL": "Google कैलेंडर में निर्यात करें"
   },
   "hr": {
     "ADD_TO_CALENDAR": "Dodaj u kalendar",
     "CLOSE_BUTTON_ARIA": "Zatvori",
     "EXPORT_BUTTON": "Izvezi",
     "EXPORT_EVENT_TITLE": "Izvezite događaj",
-    "SEND_TO_EMAIL": "Pošalji na adresu e-pošte"
+    "SEND_TO_EMAIL": "Pošalji na adresu e-pošte",
+    "EXPORT_TO_GCAL": "Izvezi u Google kalendar"
   },
   "ht": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Fèmen",
     "EXPORT_BUTTON": "Ekspòte",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Espòte nan Google Calendar"
   },
   "hu": {
     "ADD_TO_CALENDAR": "Felvétel a naptárba",
     "CLOSE_BUTTON_ARIA": "Bezárás",
     "EXPORT_BUTTON": "Exportálás",
     "EXPORT_EVENT_TITLE": "Esemény exportálása",
-    "SEND_TO_EMAIL": "Küldés e-mail-címre"
+    "SEND_TO_EMAIL": "Küldés e-mail-címre",
+    "EXPORT_TO_GCAL": "Exportálás a Google Naptárba"
   },
   "hy": {
     "ADD_TO_CALENDAR": "Ավելացնել օրացույցում",
     "CLOSE_BUTTON_ARIA": "Փակել",
     "EXPORT_BUTTON": "Արտահանել",
     "EXPORT_EVENT_TITLE": "Արտահանել միջոցառումը",
-    "SEND_TO_EMAIL": "Ուղարկել էլփոստին"
+    "SEND_TO_EMAIL": "Ուղարկել էլփոստին",
+    "EXPORT_TO_GCAL": "Արտահանել Google օրացույց"
   },
   "id": {
     "ADD_TO_CALENDAR": "Tambahkan ke Kalender",
     "CLOSE_BUTTON_ARIA": "Tutup",
     "EXPORT_BUTTON": "Ekspor",
     "EXPORT_EVENT_TITLE": "Ekspor Acara",
-    "SEND_TO_EMAIL": "Kirim ke email"
+    "SEND_TO_EMAIL": "Kirim ke email",
+    "EXPORT_TO_GCAL": "Ekspor ke Google Kalender"
   },
   "ik": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Umiguŋ",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Export to Google Calendar"
   },
   "is": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Loka",
     "EXPORT_BUTTON": "Flytja út",
     "EXPORT_EVENT_TITLE": "Flytja út viðburð",
-    "SEND_TO_EMAIL": "Senda á netfang"
+    "SEND_TO_EMAIL": "Senda á netfang",
+    "EXPORT_TO_GCAL": "Flytja út í Google dagatal"
   },
   "it": {
     "ADD_TO_CALENDAR": "Aggiungi al calendario",
     "CLOSE_BUTTON_ARIA": "Chiudi",
     "EXPORT_BUTTON": "Esporta",
     "EXPORT_EVENT_TITLE": "Esporta evento",
-    "SEND_TO_EMAIL": "Invia a e-mail"
+    "SEND_TO_EMAIL": "Invia a e-mail",
+    "EXPORT_TO_GCAL": "Esporta in Google Calendar"
   },
   "iu": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Matuli",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Export to Google Calendar"
   },
   "ja": {
     "EXPORT_EVENT_TITLE": "最新情報",
     "EXPORT_BUTTON": "すべて見る",
-    "CLOSE_BUTTON_ARIA": "お知らせのアクション"
+    "CLOSE_BUTTON_ARIA": "お知らせのアクション",
+    "EXPORT_TO_GCAL": "Googleカレンダーにエクスポート"
   },
   "jv": {
     "CLOSE_BUTTON_ARIA": "Opsi",
-    "EXPORT_EVENT_TITLE": "Riwayat obrolan tidak ada"
+    "EXPORT_EVENT_TITLE": "Riwayat obrolan tidak ada",
+    "EXPORT_TO_GCAL": "Ekspor menyang Google Calendar"
   },
   "ka": {
     "ADD_TO_CALENDAR": "კალენდარში დამატება",
     "CLOSE_BUTTON_ARIA": "დახურვა",
     "EXPORT_BUTTON": "ექსპორტი",
     "EXPORT_EVENT_TITLE": "ღონისძიების ჩანიშვნა",
-    "SEND_TO_EMAIL": "ელფოსტაზე გაგზავნა"
+    "SEND_TO_EMAIL": "ელფოსტაზე გაგზავნა",
+    "EXPORT_TO_GCAL": "Google კალენდარში ექსპორტი"
   },
   "kk": {
     "ADD_TO_CALENDAR": "Күнтізбеге қосу",
     "CLOSE_BUTTON_ARIA": "Жабу",
     "EXPORT_BUTTON": "Экспорттау",
     "EXPORT_EVENT_TITLE": "Шараны экспорттау",
-    "SEND_TO_EMAIL": "Эл. поштаға жолдау"
+    "SEND_TO_EMAIL": "Эл. поштаға жолдау",
+    "EXPORT_TO_GCAL": "Google күнтізбесіне экспорттау"
   },
   "km": {
     "CLOSE_BUTTON_ARIA": "មើលការជូនដំណឹងពីមុន",
     "EXPORT_BUTTON": "មើលទាំងអស់",
-    "EXPORT_EVENT_TITLE": "ថ្មី"
+    "EXPORT_EVENT_TITLE": "ថ្មី",
+    "EXPORT_TO_GCAL": "នាំចេញទៅកាន់ Google Calendar"
   },
   "kn": {
     "CLOSE_BUTTON_ARIA": "ಅಧಿಸೂಚನೆ ಕ್ರಮಗಳು",
     "EXPORT_BUTTON": "ಎಲ್ಲವನ್ನೂ ವೀಕ್ಷಿಸಿ",
-    "EXPORT_EVENT_TITLE": "ಹೊಸದು"
+    "EXPORT_EVENT_TITLE": "ಹೊಸದು",
+    "EXPORT_TO_GCAL": "Google ಕ್ಯಾಲೆಂಡರ್‌ಗೆ ರಫ್ತು ಮಾಡಿ"
   },
   "ko": {
     "CLOSE_BUTTON_ARIA": "알림 옵션",
     "EXPORT_BUTTON": "모두 보기",
-    "EXPORT_EVENT_TITLE": "새 항목"
+    "EXPORT_EVENT_TITLE": "새 항목",
+    "EXPORT_TO_GCAL": "Google 캘린더로 내보내기"
   },
   "ku": {
     "ADD_TO_CALENDAR": "Li Salnameyê zêde bike",
     "CLOSE_BUTTON_ARIA": "Bigire",
     "EXPORT_BUTTON": "Export",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Hinardere Google Calendar"
   },
   "ky": {
     "ADD_TO_CALENDAR": "Жылнаамага кошуу",
     "CLOSE_BUTTON_ARIA": "Жабуу",
     "EXPORT_BUTTON": "Экспорттоо",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Google Жылнаамасына экспорттоо"
   },
   "lo": {
     "EXPORT_BUTTON": "ເບິ່ງທັງໝົດ",
-    "EXPORT_EVENT_TITLE": "ໃໝ່"
+    "EXPORT_EVENT_TITLE": "ໃໝ່",
+    "EXPORT_TO_GCAL": "ສົ່ງອອກໄປຍັງ Google Calendar"
   },
   "lt": {
     "ADD_TO_CALENDAR": "Pridėti prie kalendoriaus",
     "CLOSE_BUTTON_ARIA": "Uždaryti",
     "EXPORT_BUTTON": "Eksportuoti",
     "EXPORT_EVENT_TITLE": "Eksportuoti įvykį",
-    "SEND_TO_EMAIL": "Siųsti į el. paštą"
+    "SEND_TO_EMAIL": "Siųsti į el. paštą",
+    "EXPORT_TO_GCAL": "Eksportuoti į „Google“ kalendorių"
   },
   "lv": {
     "ADD_TO_CALENDAR": "Pievienot kalendāram",
     "CLOSE_BUTTON_ARIA": "Aizvērt",
     "EXPORT_BUTTON": "Eksportēt",
     "EXPORT_EVENT_TITLE": "Eksportēt pasākumu",
-    "SEND_TO_EMAIL": "Sūtīt uz e-pastu"
+    "SEND_TO_EMAIL": "Sūtīt uz e-pastu",
+    "EXPORT_TO_GCAL": "Eksportēt uz Google kalendāru"
   },
   "mg": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Manakatona",
     "EXPORT_BUTTON": "Mandefa",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Alefa amin'ny Google Calendar"
   },
   "mk": {
     "ADD_TO_CALENDAR": "Додај во календар",
     "CLOSE_BUTTON_ARIA": "Затвори",
     "EXPORT_BUTTON": "Извези",
     "EXPORT_EVENT_TITLE": "Извези настан",
-    "SEND_TO_EMAIL": "Прати по е-пошта"
+    "SEND_TO_EMAIL": "Прати по е-пошта",
+    "EXPORT_TO_GCAL": "Извези во Google календар"
   },
   "ml": {
     "EXPORT_BUTTON": "എല്ലാം കാണുക",
-    "EXPORT_EVENT_TITLE": "പുതിയത്"
+    "EXPORT_EVENT_TITLE": "പുതിയത്",
+    "EXPORT_TO_GCAL": "Google കലണ്ടറിലേക്ക് കയറ്റുമതി ചെയ്യുക"
   },
   "mn": {
     "ADD_TO_CALENDAR": "Календарт нэмэх",
     "CLOSE_BUTTON_ARIA": "Хаах",
     "EXPORT_BUTTON": "Экспортлох",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Google Календарь руу экспортлох"
   },
   "mr": {
     "EXPORT_BUTTON": "सर्व पहा",
-    "EXPORT_EVENT_TITLE": "नवीन"
+    "EXPORT_EVENT_TITLE": "नवीन",
+    "EXPORT_TO_GCAL": "Google कॅलेंडरमध्ये निर्यात करा"
   },
   "mt": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Agħlaq",
     "EXPORT_BUTTON": "Esporta",
     "EXPORT_EVENT_TITLE": "Esporta l-Attivita'",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Esporta lejn Google Calendar"
   },
   "my": {
     "EXPORT_BUTTON": "အားလုံးကြည့်မယ်",
-    "EXPORT_EVENT_TITLE": "အသစ်"
+    "EXPORT_EVENT_TITLE": "အသစ်",
+    "EXPORT_TO_GCAL": "Google Calendar သို့ တင်ပို့ရန်"
   },
   "nb": {
     "ADD_TO_CALENDAR": "Legg til i kalender",
     "CLOSE_BUTTON_ARIA": "Lukk",
     "EXPORT_BUTTON": "Eksporter",
     "EXPORT_EVENT_TITLE": "Eksporter arrangement",
-    "SEND_TO_EMAIL": "Send til e-post"
+    "SEND_TO_EMAIL": "Send til e-post",
+    "EXPORT_TO_GCAL": "Eksporter til Google Kalender"
   },
   "ne": {
     "CLOSE_BUTTON_ARIA": "सूचना कार्यहरू",
     "EXPORT_BUTTON": "सबै हेर्नुहोस्",
-    "EXPORT_EVENT_TITLE": "नयाँ"
+    "EXPORT_EVENT_TITLE": "नयाँ",
+    "EXPORT_TO_GCAL": "Google पात्रोमा निर्यात गर्नुहोस्"
   },
   "nl": {
     "ADD_TO_CALENDAR": "Toevoegen aan kalender",
     "CLOSE_BUTTON_ARIA": "Sluiten",
     "EXPORT_BUTTON": "Exporteren",
     "EXPORT_EVENT_TITLE": "Evenement exporteren",
-    "SEND_TO_EMAIL": "Naar e-mail verzenden"
+    "SEND_TO_EMAIL": "Naar e-mail verzenden",
+    "EXPORT_TO_GCAL": "Exporteren naar Google Agenda"
   },
   "nn": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Lukk",
     "EXPORT_BUTTON": "Eksporter",
     "EXPORT_EVENT_TITLE": "Eksporter hending",
-    "SEND_TO_EMAIL": "Send til e-post"
+    "SEND_TO_EMAIL": "Send til e-post",
+    "EXPORT_TO_GCAL": "Eksporter til Google Kalender"
   },
   "or": {
     "EXPORT_BUTTON": "ସମସ୍ତ ଦେଖନ୍ତୁ",
-    "EXPORT_EVENT_TITLE": "ନୂତନ"
+    "EXPORT_EVENT_TITLE": "ନୂତନ",
+    "EXPORT_TO_GCAL": "Google କ୍ୟାଲେଣ୍ଡରକୁ ରପ୍ତାନି କରନ୍ତୁ"
   },
   "pa": {
     "EXPORT_BUTTON": "ਸਾਰੀ ਦੇਖੋ",
-    "EXPORT_EVENT_TITLE": "ਨਵਾਂ"
+    "EXPORT_EVENT_TITLE": "ਨਵਾਂ",
+    "EXPORT_TO_GCAL": "Google ਕੈਲੰਡਰ ਵਿੱਚ ਨਿਰਯਾਤ ਕਰੋ"
   },
   "pl": {
     "ADD_TO_CALENDAR": "Dodaj do kalendarza",
     "CLOSE_BUTTON_ARIA": "Zamknij",
     "EXPORT_BUTTON": "Eksportuj",
     "EXPORT_EVENT_TITLE": "Eksportuj wydarzenie",
-    "SEND_TO_EMAIL": "Wyślij na adres e-mail"
+    "SEND_TO_EMAIL": "Wyślij na adres e-mail",
+    "EXPORT_TO_GCAL": "Eksportuj do Kalendarza Google"
   },
   "pt": {
     "ADD_TO_CALENDAR": "Adicionar ao calendário",
     "CLOSE_BUTTON_ARIA": "Fechar",
     "EXPORT_BUTTON": "Exportar",
     "EXPORT_EVENT_TITLE": "Exportar evento",
-    "SEND_TO_EMAIL": "Enviar por email"
+    "SEND_TO_EMAIL": "Enviar por email",
+    "EXPORT_TO_GCAL": "Exportar para o Google Agenda"
   },
   "ro": {
     "ADD_TO_CALENDAR": "Adaugă în calendar",
     "CLOSE_BUTTON_ARIA": "Închide",
     "EXPORT_BUTTON": "Exportă",
     "EXPORT_EVENT_TITLE": "Exportă evenimentul",
-    "SEND_TO_EMAIL": "Trimite la adresa"
+    "SEND_TO_EMAIL": "Trimite la adresa",
+    "EXPORT_TO_GCAL": "Exportă în Google Calendar"
   },
   "ru": {
     "ADD_TO_CALENDAR": "Добавить в календарь",
     "CLOSE_BUTTON_ARIA": "Закрыть",
     "EXPORT_BUTTON": "Экспортировать",
     "EXPORT_EVENT_TITLE": "Экспорт мероприятия",
-    "SEND_TO_EMAIL": "Отправить на электронный адрес"
+    "SEND_TO_EMAIL": "Отправить на электронный адрес",
+    "EXPORT_TO_GCAL": "Экспортировать в Google Календарь"
   },
   "rw": {
     "ADD_TO_CALENDAR": "Kongera kuri karendari",
     "CLOSE_BUTTON_ARIA": "Gufunga",
     "EXPORT_BUTTON": "Kwimura",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Kwimura muri Google Calendar"
   },
   "sc": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Serra",
     "EXPORT_BUTTON": "Esporta",
     "EXPORT_EVENT_TITLE": "Esporta Eventu",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Esporta in Google Calendar"
   },
   "si": {
     "EXPORT_BUTTON": "සියල්ල බලන්න",
-    "EXPORT_EVENT_TITLE": "අලුත්"
+    "EXPORT_EVENT_TITLE": "අලුත්",
+    "EXPORT_TO_GCAL": "Google දින දර්ශනයට අපනයනය කරන්න"
   },
   "sk": {
     "ADD_TO_CALENDAR": "Pridať do kalendára",
     "CLOSE_BUTTON_ARIA": "Zavrieť",
     "EXPORT_BUTTON": "Exportovať",
     "EXPORT_EVENT_TITLE": "Exportovať podujatie",
-    "SEND_TO_EMAIL": "Odoslať na e-mail"
+    "SEND_TO_EMAIL": "Odoslať na e-mail",
+    "EXPORT_TO_GCAL": "Exportovať do Kalendára Google"
   },
   "sl": {
     "ADD_TO_CALENDAR": "Dodaj v koledar",
     "CLOSE_BUTTON_ARIA": "Zapri",
     "EXPORT_BUTTON": "Izvozi",
     "EXPORT_EVENT_TITLE": "Izvoz dogodkov",
-    "SEND_TO_EMAIL": "Pošlji na e-poštni naslov"
+    "SEND_TO_EMAIL": "Pošlji na e-poštni naslov",
+    "EXPORT_TO_GCAL": "Izvozi v Google Koledar"
   },
   "sn": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Vhara",
     "EXPORT_BUTTON": "Tora",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Tumira kuGoogle Calendar"
   },
   "so": {
     "ADD_TO_CALENDAR": "Ku dar Kalandarka",
     "CLOSE_BUTTON_ARIA": "Xidh",
     "EXPORT_BUTTON": "Wareeji",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "U wareeji Google Calendar"
   },
   "sq": {
     "ADD_TO_CALENDAR": "Shto në kalendar",
     "CLOSE_BUTTON_ARIA": "Mbyll",
     "EXPORT_BUTTON": "Exporto",
     "EXPORT_EVENT_TITLE": "Exportimi i ngjarjes",
-    "SEND_TO_EMAIL": "Dërgo në e-mailin"
+    "SEND_TO_EMAIL": "Dërgo në e-mailin",
+    "EXPORT_TO_GCAL": "Eksporto në Google Calendar"
   },
   "sr": {
     "ADD_TO_CALENDAR": "Додај у календар",
     "CLOSE_BUTTON_ARIA": "Затвори",
     "EXPORT_BUTTON": "Извези",
     "EXPORT_EVENT_TITLE": "Извези догађај",
-    "SEND_TO_EMAIL": "Пошаљи на е-адресу"
+    "SEND_TO_EMAIL": "Пошаљи на е-адресу",
+    "EXPORT_TO_GCAL": "Извези у Google календар"
   },
   "sv": {
     "ADD_TO_CALENDAR": "Lägg till i kalender",
     "CLOSE_BUTTON_ARIA": "Stäng",
     "EXPORT_BUTTON": "Exportera",
     "EXPORT_EVENT_TITLE": "Exportera evenemang",
-    "SEND_TO_EMAIL": "Skicka till e-post"
+    "SEND_TO_EMAIL": "Skicka till e-post",
+    "EXPORT_TO_GCAL": "Exportera till Google Kalender"
   },
   "sw": {
     "ADD_TO_CALENDAR": "Ongeza kwenye Kalenda",
     "CLOSE_BUTTON_ARIA": "Funga",
     "EXPORT_BUTTON": "Hamisha",
     "EXPORT_EVENT_TITLE": "Hamisha Tukio",
-    "SEND_TO_EMAIL": "Tuma kwenye Barua pepe"
+    "SEND_TO_EMAIL": "Tuma kwenye Barua pepe",
+    "EXPORT_TO_GCAL": "Hamisha kwenye Kalenda ya Google"
   },
   "syr": {
     "EXPORT_BUTTON": "‎See all‎",
-    "EXPORT_EVENT_TITLE": "ܚܕ݇ܬܐ:"
+    "EXPORT_EVENT_TITLE": "ܚܕ݇ܬܐ:",
+    "EXPORT_TO_GCAL": "ܫܕܪ ܠܦܪܣܐ ܕ Google"
   },
   "szl": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Zawrzij",
     "EXPORT_BUTTON": "Eksportuj",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Eksportuj do Google Calendar"
   },
   "ta": {
     "EXPORT_BUTTON": "எல்லாம் காண்க",
-    "EXPORT_EVENT_TITLE": "புதியவை"
+    "EXPORT_EVENT_TITLE": "புதியவை",
+    "EXPORT_TO_GCAL": "Google காலெண்டருக்கு ஏற்றுமதி செய்"
   },
   "te": {
     "EXPORT_BUTTON": "అన్నీ చూడండి",
-    "EXPORT_EVENT_TITLE": "కొత్తవి"
+    "EXPORT_EVENT_TITLE": "కొత్తవి",
+    "EXPORT_TO_GCAL": "Google క్యాలెಂಡర్‌కు ఎగుమతి చేయండి"
   },
   "tg": {
     "ADD_TO_CALENDAR": "Илова кардан ба тақвим",
     "CLOSE_BUTTON_ARIA": "Пӯшидан",
     "EXPORT_BUTTON": "Содир кардан",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Содир кардан ба Тақвими Google"
   },
   "th": {
     "EXPORT_BUTTON": "ดูทั้งหมด",
-    "EXPORT_EVENT_TITLE": "ใหม่"
+    "EXPORT_EVENT_TITLE": "ใหม่",
+    "EXPORT_TO_GCAL": "ส่งออกไปยัง Google ปฏิทิน"
   },
   "tr": {
     "CLOSE_BUTTON_ARIA": "Bildirim eylemleri",
     "EXPORT_BUTTON": "Tümünü gör",
-    "EXPORT_EVENT_TITLE": "Yeni"
+    "EXPORT_EVENT_TITLE": "Yeni",
+    "EXPORT_TO_GCAL": "Google Takvim'e Aktar"
   },
   "tt": {
     "ADD_TO_CALENDAR": "Add to calendar",
     "CLOSE_BUTTON_ARIA": "Ябу",
     "EXPORT_BUTTON": "Экспортлау",
     "EXPORT_EVENT_TITLE": "Export Event",
-    "SEND_TO_EMAIL": "Send to email"
+    "SEND_TO_EMAIL": "Send to email",
+    "EXPORT_TO_GCAL": "Google Календарьга экспортлау"
   },
   "uk": {
     "ADD_TO_CALENDAR": "Додати до календаря",
     "CLOSE_BUTTON_ARIA": "Закрити",
     "EXPORT_BUTTON": "Експортувати",
     "EXPORT_EVENT_TITLE": "Експортувати подію",
-    "SEND_TO_EMAIL": "Надіслати на електронну адресу"
+    "SEND_TO_EMAIL": "Надіслати на електронну адресу",
+    "EXPORT_TO_GCAL": "Експортувати до Google Календаря"
   },
   "ur": {
     "ADD_TO_CALENDAR": "کیلنڈر میں شامل کریں",
     "CLOSE_BUTTON_ARIA": "بند کریں",
     "EXPORT_BUTTON": "برآمد کریں",
     "EXPORT_EVENT_TITLE": "تقریب برآمد کریں",
-    "SEND_TO_EMAIL": "ای میل پر بھیجیں"
+    "SEND_TO_EMAIL": "ای میل پر بھیجیں",
+    "EXPORT_TO_GCAL": "گوگل کیلنڈر میں برآمد کریں"
   },
   "uz": {
     "ADD_TO_CALENDAR": "Taqvimga kiritish",
     "CLOSE_BUTTON_ARIA": "Yopish",
     "EXPORT_BUTTON": "Eksport",
     "EXPORT_EVENT_TITLE": "Tadbirni eksport qilish",
-    "SEND_TO_EMAIL": "E-mailga yuborish"
+    "SEND_TO_EMAIL": "E-mailga yuborish",
+    "EXPORT_TO_GCAL": "Google Taqvimga eksport qilish"
   },
   "vi": {
     "EXPORT_BUTTON": "Xem tất cả",
-    "EXPORT_EVENT_TITLE": "Mới"
+    "EXPORT_EVENT_TITLE": "Mới",
+    "EXPORT_TO_GCAL": "Xuất sang Google Calendar"
   },
   "zh-Hans": {
     "CLOSE_BUTTON_ARIA": "通知操作",
     "EXPORT_BUTTON": "查看全部",
-    "EXPORT_EVENT_TITLE": "新通知"
+    "EXPORT_EVENT_TITLE": "新通知",
+    "EXPORT_TO_GCAL": "导出到 Google 日历"
   },
   "zh-Hant": {
     "CLOSE_BUTTON_ARIA": "通知動作",
     "EXPORT_BUTTON": "查看全部",
-    "EXPORT_EVENT_TITLE": "新通知"
+    "EXPORT_EVENT_TITLE": "新通知",
+    "EXPORT_TO_GCAL": "匯出到 Google 日曆"
   }
 }

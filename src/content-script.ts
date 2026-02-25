@@ -1,29 +1,34 @@
+import translations from './facebook_translations.json';
 import { initScraper } from './scraper';
 
-// Lookups for English and Polish UI
+// Type helper for translations
+type LangCode = keyof typeof translations;
+
+// Lookups for all supported languages
 const TEXT_MATCHERS = {
-  EXPORT_EVENT_TITLE: ['Eksportuj wydarzenie', 'Export Event'],
-  ADD_TO_CALENDAR: ['Dodaj do kalendarza', 'Add to calendar'],
-  SEND_TO_EMAIL: ['Wyślij na adres e-mail', 'Send to email'],
-  EXPORT_BUTTON: ['Eksportuj', 'Export'],
-  CLOSE_BUTTON_ARIA: ['Zamknij', 'Close'],
+  EXPORT_EVENT_TITLE: Array.from(new Set(Object.values(translations).map(t => (t as { EXPORT_EVENT_TITLE?: string }).EXPORT_EVENT_TITLE).filter(Boolean) as string[])),
+  ADD_TO_CALENDAR: Array.from(new Set(Object.values(translations).map(t => (t as { ADD_TO_CALENDAR?: string }).ADD_TO_CALENDAR).filter(Boolean) as string[])),
+  SEND_TO_EMAIL: Array.from(new Set(Object.values(translations).map(t => (t as { SEND_TO_EMAIL?: string }).SEND_TO_EMAIL).filter(Boolean) as string[])),
+  EXPORT_BUTTON: Array.from(new Set(Object.values(translations).map(t => (t as { EXPORT_BUTTON?: string }).EXPORT_BUTTON).filter(Boolean) as string[])),
+  CLOSE_BUTTON_ARIA: Array.from(new Set(Object.values(translations).map(t => (t as { CLOSE_BUTTON_ARIA?: string }).CLOSE_BUTTON_ARIA).filter(Boolean) as string[])),
 };
 
-/*
 const GCAL_OPTION_ID = 'gcal-export-option';
 let isGcalSelected = false;
-*/
 
 let isOptionInjected = false;
 
-/*
-function getGcalText(lang: 'pl' | 'en'): string {
-  return lang === 'pl' ? 'Eksportuj do kalendarza Google' : 'Export to Google Calendar';
+function getGcalText(lang: string): string {
+  if (lang in translations) {
+    const t = translations[lang as LangCode];
+    if ('EXPORT_TO_GCAL' in t) {
+      return (t as { EXPORT_TO_GCAL: string }).EXPORT_TO_GCAL;
+    }
+  }
+  return translations.en.EXPORT_TO_GCAL;
 }
-*/
 
 // Stores the checked/unchecked className for the radio dot, learned dynamically
-/*
 let dotCheckedClassName = '';
 let dotUncheckedClassName = '';
 // Stores the inner dot HTML (the filled circle that appears when checked)
@@ -52,7 +57,6 @@ function injectHoverStyles() {
   `;
   document.head.appendChild(style);
 }
-*/
 
 // Observe body for modal injections
 const observer = new MutationObserver((mutations) => {
@@ -66,12 +70,11 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 function checkForExportModal() {
   if (isOptionInjected) return;
-  // TEMPORARY: Stop adding the "Add to Google Calendar" option
-  return;
-  /*
+  
   const dialogs = document.querySelectorAll('div[role="dialog"]');
   for (const dialog of dialogs) {
-    const isExportModal = Array.from(dialog.querySelectorAll('span')).some(
+    const spans = Array.from(dialog.querySelectorAll('span'));
+    const isExportModal = spans.some(
       (span) =>
         span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
     );
@@ -80,10 +83,8 @@ function checkForExportModal() {
       break;
     }
   }
-  */
 }
 
-/*
 function injectGoogleCalendarOption(dialog: HTMLElement) {
   // Detect language
   const allSpans = Array.from(dialog.querySelectorAll('span'));
@@ -95,8 +96,7 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   );
   if (!calendarSpan || !emailSpan) return;
 
-  const lang: 'pl' | 'en' =
-    calendarSpan.textContent?.trim() === 'Dodaj do kalendarza' ? 'pl' : 'en';
+  const lang = document.documentElement.lang || 'en';
 
   // Find the section wrappers.
   // Structure: dialog > sectionDiv > innerDiv > div[role="button"]
@@ -359,9 +359,7 @@ function setupExportInterception(dialog: HTMLElement) {
     true,
   );
 }
-*/
 
-/*
 // Reset state when modal is removed from DOM
 const resetObserver = new MutationObserver(() => {
   if (!isOptionInjected) return;
@@ -380,6 +378,6 @@ const resetObserver = new MutationObserver(() => {
   }
 });
 resetObserver.observe(document.body, { childList: true, subtree: true });
-*/
 
+// Scraper is enabled
 initScraper();

@@ -17,19 +17,23 @@ export interface ScraperState {
 }
 
 const STORAGE_KEY = '__FB_EVENT_TRANS_SCRAPER_v1__';
+const DELAY_BETWEEN_LANGUAGES_MS = 1000 * 60; // 1 minute
 
 let isScraperStopped = false;
 
 export async function initScraper() {
   if (typeof window === 'undefined') return;
 
-  // Listen for keyboard shortcut (Alt + S for start, Alt + A for stop)
+  // Listen for keyboard shortcut (Alt + S for start, Alt + A for stop, Alt + X for current lang only)
   window.addEventListener('keydown', (e) => {
     if (e.altKey && e.key.toLowerCase() === 's') {
       startScraper();
     }
     if (e.altKey && e.key.toLowerCase() === 'a') {
       stopScraper();
+    }
+    if (e.altKey && e.key.toLowerCase() === 'x') {
+      scrapeCurrentLanguageOnly();
     }
   });
 
@@ -294,39 +298,103 @@ function getLanguageListItems(): HTMLElement[] {
   return uniqueItems;
 }
 
+function getExportDialog(): HTMLElement | null {
+  const dialogs = Array.from(document.querySelectorAll('div[role="dialog"]'));
+  return (dialogs.find(d => 
+    d.querySelector('a[href*="/events/ical/export/"]') || 
+    d.querySelector('input[value="download"]')
+  ) as HTMLElement) || null;
+}
+
+async function scrapeCurrentLanguageOnly() {
+  console.log('[Scraper] Single language scrape (Alt + X) starting...');
+
+  // If modal is already open, just scrape and log
+  const exportDialog = getExportDialog();
+  if (exportDialog) {
+    const strings = extractModalStrings();
+    console.log('[Scraper] Found open Export modal, extracted:', strings);
+    return;
+  }
+
+  // Otherwise, trigger the modal open flow
+  const moreBtn = findByBgPosition('0px', '-797px') || findByBgPosition('0px', '-882px');
+  if (!moreBtn) {
+    console.error('[Scraper] Could not find ... button');
+    return;
+  }
+  
+  console.log('[Scraper] Opening menu...');
+  moreBtn.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
+
+  setTimeout(() => {
+    const addToCalBtn = findByBgPosition('0px', '-293px');
+    if (addToCalBtn) {
+      console.log('[Scraper] Opening modal...');
+      addToCalBtn.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
+      
+      setTimeout(() => {
+        const strings = extractModalStrings();
+        if (Object.keys(strings).length === 0) {
+          console.warn('[Scraper] Extraction failed. Modal might not be ready.');
+          return;
+        }
+        console.log('[Scraper] Extracted for current language:', strings);
+        
+        const closeBtn = findByBgPosition('0px', '-548px');
+        if (closeBtn) {
+          console.log('[Scraper] Closing modal.');
+          closeBtn.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
+        }
+      }, 2000);
+    } else {
+      console.warn('[Scraper] Add to calendar button not found in menu.');
+    }
+  }, 2000);
+}
+
 function extractModalStrings(): Record<string, string> {
-  const dialog = document.querySelector('div[role="dialog"]');
-  if (!dialog) return {};
+  const dialog = getExportDialog();
+  if (!dialog) {
+    console.warn('[Scraper] No Export dialog found among open dialogs.');
+    return {};
+  }
 
   const res: Record<string, string> = {};
   
   // 1. Header -> EXPORT_EVENT_TITLE
+  // Look for h2, but ensure it's not empty
   const header = dialog.querySelector('h2');
   if (header?.textContent) {
     res.EXPORT_EVENT_TITLE = header.textContent.trim();
   }
 
   // 2. Labels -> ADD_TO_CALENDAR, SEND_TO_EMAIL
-  // These are labels for radio buttons.
-  const labels = Array.from(dialog.querySelectorAll('label span'));
+  // We expect exactly two labels for "Add to calendar" and "Send to email" radio buttons
+  const labels = Array.from(dialog.querySelectorAll('label span')).filter(s => s.textContent?.trim());
   if (labels.length >= 2) {
     res.ADD_TO_CALENDAR = labels[0].textContent?.trim() || '';
     res.SEND_TO_EMAIL = labels[labels.length - 1].textContent?.trim() || '';
   }
 
   // 3. Export button text -> EXPORT_BUTTON
-  // Usually in the footer, inside a link (since it downloads an ICS).
-  const exportBtnLink = dialog.querySelector('a[role="link"] span');
+  // Priority: the link that actually performs the export
+  const exportBtnLink = dialog.querySelector('a[href*="/events/ical/export/"] span') || 
+                        dialog.querySelector('a[role="link"][download] span') ||
+                        dialog.querySelector('a[role="link"] span');
   if (exportBtnLink?.textContent) {
     res.EXPORT_BUTTON = exportBtnLink.textContent.trim();
   }
 
   // 4. Close aria-label -> CLOSE_BUTTON_ARIA
-  // It's a button at the top usually.
-  const closeBtn = Array.from(dialog.querySelectorAll('div[role="button"][aria-label]'))
+  // It's a button at the top usually. We exclude buttons that are likely the main export button.
+  const closeBtn = Array.from(dialog.querySelectorAll('div[role="button"][aria-label], a[role="button"][aria-label]'))
     .find(el => {
       const aria = el.getAttribute('aria-label');
-      return aria && aria.length < 20 && !aria.includes(res.EXPORT_BUTTON || "___");
+      if (!aria || aria.length > 30) return false;
+      const text = el.textContent?.trim() || "";
+      // The close button usually has no text or very short text like "Close"
+      return text.length < 10 && !aria.includes(res.EXPORT_BUTTON || "___");
     });
     
   if (closeBtn) {
@@ -422,6 +490,11 @@ async function runScraperStep(state: ScraperState) {
 
         setTimeout(async () => {
           const strings = extractModalStrings();
+          if (Object.keys(strings).length === 0) {
+            console.warn('[Scraper] Extraction failed or wrong modal. Retrying in 2s...');
+            setTimeout(() => runScraperStep(state), 2000);
+            return;
+          }
           console.log('[Scraper] Extracted:', strings);
 
           const closeBtn = findByBgPosition('0px', '-548px');
@@ -441,7 +514,8 @@ async function runScraperStep(state: ScraperState) {
           state.phase = 'ACCOUNT_MENU';
           state.langIndex++; // Move to next lang for next iteration
           await saveState(state);
-          setTimeout(() => runScraperStep(state), 2000);
+          console.log(`[Scraper] Waiting ${DELAY_BETWEEN_LANGUAGES_MS / 1000}s before next language...`);
+          setTimeout(() => runScraperStep(state), DELAY_BETWEEN_LANGUAGES_MS);
         }, 2000);
         break;
       }

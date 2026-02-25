@@ -1,0 +1,634 @@
+{
+  "af": {
+    "ADD_TO_CALENDAR": "Voeg by Kalender",
+    "CLOSE_BUTTON_ARIA": "Maak toe",
+    "EXPORT_BUTTON": "Voer uit",
+    "EXPORT_EVENT_TITLE": "Voer geleentheid uit",
+    "SEND_TO_EMAIL": "Stuur na e-posadres"
+  },
+  "am": {
+    "CLOSE_BUTTON_ARIA": "የቀድሞ ማሳወቂያዎችን ይመልከቱ",
+    "EXPORT_BUTTON": "ሁሉንም ይመልከቱ",
+    "EXPORT_EVENT_TITLE": "አዲስ"
+  },
+  "as": {
+    "CLOSE_BUTTON_ARIA": "জাননী কাৰ্য্যসমূহ",
+    "EXPORT_BUTTON": "সকলো চাওক",
+    "EXPORT_EVENT_TITLE": "নতুন"
+  },
+  "be": {
+    "ADD_TO_CALENDAR": "Дадаць у каляндар",
+    "CLOSE_BUTTON_ARIA": "Закрыць",
+    "EXPORT_BUTTON": "Экспартаваць",
+    "EXPORT_EVENT_TITLE": "Экспартаваць падзею",
+    "SEND_TO_EMAIL": "Даслаць на адрэсу электроннае пошты"
+  },
+  "ber": {
+    "CLOSE_BUTTON_ARIA": "ⵜⵉⴳⴰⵡⵉⵏ ⵏ ⵜⵏⵖⵎⵉⵙⵜ",
+    "EXPORT_BUTTON": "ⵥⵕ ⵎⴰⵕⵕⴰ",
+    "EXPORT_EVENT_TITLE": "ⴰⵎⴰⵢⵏⵓ"
+  },
+  "bg": {
+    "ADD_TO_CALENDAR": "Добавяне в календара",
+    "CLOSE_BUTTON_ARIA": "Затваряне",
+    "EXPORT_BUTTON": "Експортиране",
+    "EXPORT_EVENT_TITLE": "Експортиране на събитие",
+    "SEND_TO_EMAIL": "Изпращане на имейл"
+  },
+  "bn": {
+    "CLOSE_BUTTON_ARIA": "নোটিফিকেশন অ্যাকশন",
+    "EXPORT_BUTTON": "সব দেখুন",
+    "EXPORT_EVENT_TITLE": "নতুন"
+  },
+  "br": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Serriñ",
+    "EXPORT_BUTTON": "Esporzhiañ",
+    "EXPORT_EVENT_TITLE": "Ezporzhiañ an darvoud",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "bs": {
+    "ADD_TO_CALENDAR": "Dodaj u kalendar",
+    "CLOSE_BUTTON_ARIA": "Zatvori",
+    "EXPORT_BUTTON": "Izvoz",
+    "EXPORT_EVENT_TITLE": "Izvezi događaje",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ca": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Tanca",
+    "EXPORT_BUTTON": "Exporta",
+    "EXPORT_EVENT_TITLE": "Exporta l'esdeveniment",
+    "SEND_TO_EMAIL": "Envia'l al correu electrònic"
+  },
+  "ceb": {
+    "ADD_TO_CALENDAR": "Idugang sa Kalendaryo",
+    "CLOSE_BUTTON_ARIA": "Isirado",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ckb": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "داخستن",
+    "EXPORT_BUTTON": "هەناردەکردن",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "بنێرە بۆ ئیمەیڵ"
+  },
+  "co": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Chjode",
+    "EXPORT_BUTTON": "Spurtà",
+    "EXPORT_EVENT_TITLE": "Spurtà l'avvenimentu",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "cs": {
+    "ADD_TO_CALENDAR": "Přidat do kalendáře",
+    "CLOSE_BUTTON_ARIA": "Zavřít",
+    "EXPORT_BUTTON": "Exportovat",
+    "EXPORT_EVENT_TITLE": "Exportovat událost",
+    "SEND_TO_EMAIL": "Poslat e-mailem"
+  },
+  "cy": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Cau",
+    "EXPORT_BUTTON": "Allforio",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "da": {
+    "ADD_TO_CALENDAR": "Føj til kalender",
+    "CLOSE_BUTTON_ARIA": "Luk",
+    "EXPORT_BUTTON": "Eksportér",
+    "EXPORT_EVENT_TITLE": "Eksportér begivenhed",
+    "SEND_TO_EMAIL": "Send til e-mail"
+  },
+  "de": {
+    "ADD_TO_CALENDAR": "Zum Kalender hinzufügen",
+    "CLOSE_BUTTON_ARIA": "Schließen",
+    "EXPORT_BUTTON": "Exportieren",
+    "EXPORT_EVENT_TITLE": "Veranstaltung exportieren",
+    "SEND_TO_EMAIL": "An E-Mail-Adresse senden"
+  },
+  "el": {
+    "ADD_TO_CALENDAR": "Προσθήκη στο ημερολόγιο",
+    "CLOSE_BUTTON_ARIA": "Κλείσιμο",
+    "EXPORT_BUTTON": "Εξαγωγή",
+    "EXPORT_EVENT_TITLE": "Eξαγωγή εκδήλωσης",
+    "SEND_TO_EMAIL": "Αποστολή σε email"
+  },
+  "en": {
+    "ADD_TO_CALENDAR": "Add to Calendar",
+    "CLOSE_BUTTON_ARIA": "Close",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Export event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "eo": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Fermi",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Elportado de la okazaĵo",
+    "SEND_TO_EMAIL": "Sendi al retpoŝtadreso"
+  },
+  "es": {
+    "ADD_TO_CALENDAR": "Añadir al calendario",
+    "CLOSE_BUTTON_ARIA": "Cerrar",
+    "EXPORT_BUTTON": "Exportar",
+    "EXPORT_EVENT_TITLE": "Exportar evento",
+    "SEND_TO_EMAIL": "Enviar a correo electrónico"
+  },
+  "et": {
+    "ADD_TO_CALENDAR": "Lisa kalendrisse",
+    "CLOSE_BUTTON_ARIA": "Sule",
+    "EXPORT_BUTTON": "Ekspordi",
+    "EXPORT_EVENT_TITLE": "Ekspordi üritus",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "eu": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Itxi",
+    "EXPORT_BUTTON": "Esportatu",
+    "EXPORT_EVENT_TITLE": "Ekimenak esportatu",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "fa": {
+    "ADD_TO_CALENDAR": "افزودن به تقویم",
+    "CLOSE_BUTTON_ARIA": "بستن",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ff": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Uddu",
+    "EXPORT_BUTTON": "Yaltiŋ",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "fi": {
+    "ADD_TO_CALENDAR": "Lisää kalenteriin",
+    "CLOSE_BUTTON_ARIA": "Sulje",
+    "EXPORT_BUTTON": "Vie",
+    "EXPORT_EVENT_TITLE": "Vie tapahtuma",
+    "SEND_TO_EMAIL": "Lähetä sähköpostiin"
+  },
+  "fil": {
+    "ADD_TO_CALENDAR": "I-add sa Calendar",
+    "CLOSE_BUTTON_ARIA": "Isara",
+    "EXPORT_BUTTON": "I-export",
+    "EXPORT_EVENT_TITLE": "I-export ang Event",
+    "SEND_TO_EMAIL": "Ipadala sa email"
+  },
+  "fo": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Lat Aftur",
+    "EXPORT_BUTTON": "Flyt út",
+    "EXPORT_EVENT_TITLE": "Flyt tiltaki út",
+    "SEND_TO_EMAIL": "Send til teldubústað"
+  },
+  "fr": {
+    "ADD_TO_CALENDAR": "Ajouter au calendrier",
+    "CLOSE_BUTTON_ARIA": "Fermer",
+    "EXPORT_BUTTON": "Exporter",
+    "EXPORT_EVENT_TITLE": "Exporter l’évènement",
+    "SEND_TO_EMAIL": "Envoyer par courriel"
+  },
+  "fur": {
+    "ADD_TO_CALENDAR": "Zonte tal Calendari",
+    "CLOSE_BUTTON_ARIA": "Siere",
+    "EXPORT_BUTTON": "Esporta",
+    "EXPORT_EVENT_TITLE": "Esporta evento",
+    "SEND_TO_EMAIL": "Invia a e-mail"
+  },
+  "fy": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Slute",
+    "EXPORT_BUTTON": "Eksportearje",
+    "EXPORT_EVENT_TITLE": "Evenemint eksportearje",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ga": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Dún",
+    "EXPORT_BUTTON": "Easpórtáil",
+    "EXPORT_EVENT_TITLE": "Easpórtáil Ócáidí",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "gl": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Pechar",
+    "EXPORT_BUTTON": "Exportar",
+    "EXPORT_EVENT_TITLE": "Exportar o evento",
+    "SEND_TO_EMAIL": "Enviar por correo electrónico"
+  },
+  "gn": {
+    "ADD_TO_CALENDAR": "Emoî Arapapahápe",
+    "CLOSE_BUTTON_ARIA": "Emboty",
+    "EXPORT_BUTTON": "Okápe guarãva",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "gu": {
+    "EXPORT_BUTTON": "બધું જુઓ",
+    "EXPORT_EVENT_TITLE": "નવું"
+  },
+  "ha": {
+    "ADD_TO_CALENDAR": "Ƙara Zuwa Kalanda",
+    "CLOSE_BUTTON_ARIA": "Rufe",
+    "EXPORT_BUTTON": "Fitar",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "hi": {
+    "CLOSE_BUTTON_ARIA": "नोटिफ़िकेशन एक्शन",
+    "EXPORT_BUTTON": "सभी देखें",
+    "EXPORT_EVENT_TITLE": "नए"
+  },
+  "hr": {
+    "ADD_TO_CALENDAR": "Dodaj u kalendar",
+    "CLOSE_BUTTON_ARIA": "Zatvori",
+    "EXPORT_BUTTON": "Izvezi",
+    "EXPORT_EVENT_TITLE": "Izvezite događaj",
+    "SEND_TO_EMAIL": "Pošalji na adresu e-pošte"
+  },
+  "ht": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Fèmen",
+    "EXPORT_BUTTON": "Ekspòte",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "hu": {
+    "ADD_TO_CALENDAR": "Felvétel a naptárba",
+    "CLOSE_BUTTON_ARIA": "Bezárás",
+    "EXPORT_BUTTON": "Exportálás",
+    "EXPORT_EVENT_TITLE": "Esemény exportálása",
+    "SEND_TO_EMAIL": "Küldés e-mail-címre"
+  },
+  "hy": {
+    "ADD_TO_CALENDAR": "Ավելացնել օրացույցում",
+    "CLOSE_BUTTON_ARIA": "Փակել",
+    "EXPORT_BUTTON": "Արտահանել",
+    "EXPORT_EVENT_TITLE": "Արտահանել միջոցառումը",
+    "SEND_TO_EMAIL": "Ուղարկել էլփոստին"
+  },
+  "id": {
+    "ADD_TO_CALENDAR": "Tambahkan ke Kalender",
+    "CLOSE_BUTTON_ARIA": "Tutup",
+    "EXPORT_BUTTON": "Ekspor",
+    "EXPORT_EVENT_TITLE": "Ekspor Acara",
+    "SEND_TO_EMAIL": "Kirim ke email"
+  },
+  "ik": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Umiguŋ",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "is": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Loka",
+    "EXPORT_BUTTON": "Flytja út",
+    "EXPORT_EVENT_TITLE": "Flytja út viðburð",
+    "SEND_TO_EMAIL": "Senda á netfang"
+  },
+  "it": {
+    "ADD_TO_CALENDAR": "Aggiungi al calendario",
+    "CLOSE_BUTTON_ARIA": "Chiudi",
+    "EXPORT_BUTTON": "Esporta",
+    "EXPORT_EVENT_TITLE": "Esporta evento",
+    "SEND_TO_EMAIL": "Invia a e-mail"
+  },
+  "iu": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Matuli",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ja": {
+    "EXPORT_EVENT_TITLE": "最新情報",
+    "EXPORT_BUTTON": "すべて見る",
+    "CLOSE_BUTTON_ARIA": "お知らせのアクション"
+  },
+  "jv": {
+    "CLOSE_BUTTON_ARIA": "Opsi",
+    "EXPORT_EVENT_TITLE": "Riwayat obrolan tidak ada"
+  },
+  "ka": {
+    "ADD_TO_CALENDAR": "კალენდარში დამატება",
+    "CLOSE_BUTTON_ARIA": "დახურვა",
+    "EXPORT_BUTTON": "ექსპორტი",
+    "EXPORT_EVENT_TITLE": "ღონისძიების ჩანიშვნა",
+    "SEND_TO_EMAIL": "ელფოსტაზე გაგზავნა"
+  },
+  "kk": {
+    "ADD_TO_CALENDAR": "Күнтізбеге қосу",
+    "CLOSE_BUTTON_ARIA": "Жабу",
+    "EXPORT_BUTTON": "Экспорттау",
+    "EXPORT_EVENT_TITLE": "Шараны экспорттау",
+    "SEND_TO_EMAIL": "Эл. поштаға жолдау"
+  },
+  "km": {
+    "CLOSE_BUTTON_ARIA": "មើលការជូនដំណឹងពីមុន",
+    "EXPORT_BUTTON": "មើលទាំងអស់",
+    "EXPORT_EVENT_TITLE": "ថ្មី"
+  },
+  "kn": {
+    "CLOSE_BUTTON_ARIA": "ಅಧಿಸೂಚನೆ ಕ್ರಮಗಳು",
+    "EXPORT_BUTTON": "ಎಲ್ಲವನ್ನೂ ವೀಕ್ಷಿಸಿ",
+    "EXPORT_EVENT_TITLE": "ಹೊಸದು"
+  },
+  "ko": {
+    "CLOSE_BUTTON_ARIA": "알림 옵션",
+    "EXPORT_BUTTON": "모두 보기",
+    "EXPORT_EVENT_TITLE": "새 항목"
+  },
+  "ku": {
+    "ADD_TO_CALENDAR": "Li Salnameyê zêde bike",
+    "CLOSE_BUTTON_ARIA": "Bigire",
+    "EXPORT_BUTTON": "Export",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ky": {
+    "ADD_TO_CALENDAR": "Жылнаамага кошуу",
+    "CLOSE_BUTTON_ARIA": "Жабуу",
+    "EXPORT_BUTTON": "Экспорттоо",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "lo": {
+    "EXPORT_BUTTON": "ເບິ່ງທັງໝົດ",
+    "EXPORT_EVENT_TITLE": "ໃໝ່"
+  },
+  "lt": {
+    "ADD_TO_CALENDAR": "Pridėti prie kalendoriaus",
+    "CLOSE_BUTTON_ARIA": "Uždaryti",
+    "EXPORT_BUTTON": "Eksportuoti",
+    "EXPORT_EVENT_TITLE": "Eksportuoti įvykį",
+    "SEND_TO_EMAIL": "Siųsti į el. paštą"
+  },
+  "lv": {
+    "ADD_TO_CALENDAR": "Pievienot kalendāram",
+    "CLOSE_BUTTON_ARIA": "Aizvērt",
+    "EXPORT_BUTTON": "Eksportēt",
+    "EXPORT_EVENT_TITLE": "Eksportēt pasākumu",
+    "SEND_TO_EMAIL": "Sūtīt uz e-pastu"
+  },
+  "mg": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Manakatona",
+    "EXPORT_BUTTON": "Mandefa",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "mk": {
+    "ADD_TO_CALENDAR": "Додај во календар",
+    "CLOSE_BUTTON_ARIA": "Затвори",
+    "EXPORT_BUTTON": "Извези",
+    "EXPORT_EVENT_TITLE": "Извези настан",
+    "SEND_TO_EMAIL": "Прати по е-пошта"
+  },
+  "ml": {
+    "EXPORT_BUTTON": "എല്ലാം കാണുക",
+    "EXPORT_EVENT_TITLE": "പുതിയത്"
+  },
+  "mn": {
+    "ADD_TO_CALENDAR": "Календарт нэмэх",
+    "CLOSE_BUTTON_ARIA": "Хаах",
+    "EXPORT_BUTTON": "Экспортлох",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "mr": {
+    "EXPORT_BUTTON": "सर्व पहा",
+    "EXPORT_EVENT_TITLE": "नवीन"
+  },
+  "mt": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Agħlaq",
+    "EXPORT_BUTTON": "Esporta",
+    "EXPORT_EVENT_TITLE": "Esporta l-Attivita'",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "my": {
+    "EXPORT_BUTTON": "အားလုံးကြည့်မယ်",
+    "EXPORT_EVENT_TITLE": "အသစ်"
+  },
+  "nb": {
+    "ADD_TO_CALENDAR": "Legg til i kalender",
+    "CLOSE_BUTTON_ARIA": "Lukk",
+    "EXPORT_BUTTON": "Eksporter",
+    "EXPORT_EVENT_TITLE": "Eksporter arrangement",
+    "SEND_TO_EMAIL": "Send til e-post"
+  },
+  "ne": {
+    "CLOSE_BUTTON_ARIA": "सूचना कार्यहरू",
+    "EXPORT_BUTTON": "सबै हेर्नुहोस्",
+    "EXPORT_EVENT_TITLE": "नयाँ"
+  },
+  "nl": {
+    "ADD_TO_CALENDAR": "Toevoegen aan kalender",
+    "CLOSE_BUTTON_ARIA": "Sluiten",
+    "EXPORT_BUTTON": "Exporteren",
+    "EXPORT_EVENT_TITLE": "Evenement exporteren",
+    "SEND_TO_EMAIL": "Naar e-mail verzenden"
+  },
+  "nn": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Lukk",
+    "EXPORT_BUTTON": "Eksporter",
+    "EXPORT_EVENT_TITLE": "Eksporter hending",
+    "SEND_TO_EMAIL": "Send til e-post"
+  },
+  "or": {
+    "EXPORT_BUTTON": "ସମସ୍ତ ଦେଖନ୍ତୁ",
+    "EXPORT_EVENT_TITLE": "ନୂତନ"
+  },
+  "pa": {
+    "EXPORT_BUTTON": "ਸਾਰੀ ਦੇਖੋ",
+    "EXPORT_EVENT_TITLE": "ਨਵਾਂ"
+  },
+  "pl": {
+    "ADD_TO_CALENDAR": "Dodaj do kalendarza",
+    "CLOSE_BUTTON_ARIA": "Zamknij",
+    "EXPORT_BUTTON": "Eksportuj",
+    "EXPORT_EVENT_TITLE": "Eksportuj wydarzenie",
+    "SEND_TO_EMAIL": "Wyślij na adres e-mail"
+  },
+  "pt": {
+    "ADD_TO_CALENDAR": "Adicionar ao calendário",
+    "CLOSE_BUTTON_ARIA": "Fechar",
+    "EXPORT_BUTTON": "Exportar",
+    "EXPORT_EVENT_TITLE": "Exportar evento",
+    "SEND_TO_EMAIL": "Enviar por email"
+  },
+  "ro": {
+    "ADD_TO_CALENDAR": "Adaugă în calendar",
+    "CLOSE_BUTTON_ARIA": "Închide",
+    "EXPORT_BUTTON": "Exportă",
+    "EXPORT_EVENT_TITLE": "Exportă evenimentul",
+    "SEND_TO_EMAIL": "Trimite la adresa"
+  },
+  "ru": {
+    "ADD_TO_CALENDAR": "Добавить в календарь",
+    "CLOSE_BUTTON_ARIA": "Закрыть",
+    "EXPORT_BUTTON": "Экспортировать",
+    "EXPORT_EVENT_TITLE": "Экспорт мероприятия",
+    "SEND_TO_EMAIL": "Отправить на электронный адрес"
+  },
+  "rw": {
+    "ADD_TO_CALENDAR": "Kongera kuri karendari",
+    "CLOSE_BUTTON_ARIA": "Gufunga",
+    "EXPORT_BUTTON": "Kwimura",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "sc": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Serra",
+    "EXPORT_BUTTON": "Esporta",
+    "EXPORT_EVENT_TITLE": "Esporta Eventu",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "si": {
+    "EXPORT_BUTTON": "සියල්ල බලන්න",
+    "EXPORT_EVENT_TITLE": "අලුත්"
+  },
+  "sk": {
+    "ADD_TO_CALENDAR": "Pridať do kalendára",
+    "CLOSE_BUTTON_ARIA": "Zavrieť",
+    "EXPORT_BUTTON": "Exportovať",
+    "EXPORT_EVENT_TITLE": "Exportovať podujatie",
+    "SEND_TO_EMAIL": "Odoslať na e-mail"
+  },
+  "sl": {
+    "ADD_TO_CALENDAR": "Dodaj v koledar",
+    "CLOSE_BUTTON_ARIA": "Zapri",
+    "EXPORT_BUTTON": "Izvozi",
+    "EXPORT_EVENT_TITLE": "Izvoz dogodkov",
+    "SEND_TO_EMAIL": "Pošlji na e-poštni naslov"
+  },
+  "sn": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Vhara",
+    "EXPORT_BUTTON": "Tora",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "so": {
+    "ADD_TO_CALENDAR": "Ku dar Kalandarka",
+    "CLOSE_BUTTON_ARIA": "Xidh",
+    "EXPORT_BUTTON": "Wareeji",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "sq": {
+    "ADD_TO_CALENDAR": "Shto në kalendar",
+    "CLOSE_BUTTON_ARIA": "Mbyll",
+    "EXPORT_BUTTON": "Exporto",
+    "EXPORT_EVENT_TITLE": "Exportimi i ngjarjes",
+    "SEND_TO_EMAIL": "Dërgo në e-mailin"
+  },
+  "sr": {
+    "ADD_TO_CALENDAR": "Додај у календар",
+    "CLOSE_BUTTON_ARIA": "Затвори",
+    "EXPORT_BUTTON": "Извези",
+    "EXPORT_EVENT_TITLE": "Извези догађај",
+    "SEND_TO_EMAIL": "Пошаљи на е-адресу"
+  },
+  "sv": {
+    "ADD_TO_CALENDAR": "Lägg till i kalender",
+    "CLOSE_BUTTON_ARIA": "Stäng",
+    "EXPORT_BUTTON": "Exportera",
+    "EXPORT_EVENT_TITLE": "Exportera evenemang",
+    "SEND_TO_EMAIL": "Skicka till e-post"
+  },
+  "sw": {
+    "ADD_TO_CALENDAR": "Ongeza kwenye Kalenda",
+    "CLOSE_BUTTON_ARIA": "Funga",
+    "EXPORT_BUTTON": "Hamisha",
+    "EXPORT_EVENT_TITLE": "Hamisha Tukio",
+    "SEND_TO_EMAIL": "Tuma kwenye Barua pepe"
+  },
+  "syr": {
+    "EXPORT_BUTTON": "‎See all‎",
+    "EXPORT_EVENT_TITLE": "ܚܕ݇ܬܐ:"
+  },
+  "szl": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Zawrzij",
+    "EXPORT_BUTTON": "Eksportuj",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "ta": {
+    "EXPORT_BUTTON": "எல்லாம் காண்க",
+    "EXPORT_EVENT_TITLE": "புதியவை"
+  },
+  "te": {
+    "EXPORT_BUTTON": "అన్నీ చూడండి",
+    "EXPORT_EVENT_TITLE": "కొత్తవి"
+  },
+  "tg": {
+    "ADD_TO_CALENDAR": "Илова кардан ба тақвим",
+    "CLOSE_BUTTON_ARIA": "Пӯшидан",
+    "EXPORT_BUTTON": "Содир кардан",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "th": {
+    "EXPORT_BUTTON": "ดูทั้งหมด",
+    "EXPORT_EVENT_TITLE": "ใหม่"
+  },
+  "tr": {
+    "CLOSE_BUTTON_ARIA": "Bildirim eylemleri",
+    "EXPORT_BUTTON": "Tümünü gör",
+    "EXPORT_EVENT_TITLE": "Yeni"
+  },
+  "tt": {
+    "ADD_TO_CALENDAR": "Add to calendar",
+    "CLOSE_BUTTON_ARIA": "Ябу",
+    "EXPORT_BUTTON": "Экспортлау",
+    "EXPORT_EVENT_TITLE": "Export Event",
+    "SEND_TO_EMAIL": "Send to email"
+  },
+  "uk": {
+    "ADD_TO_CALENDAR": "Додати до календаря",
+    "CLOSE_BUTTON_ARIA": "Закрити",
+    "EXPORT_BUTTON": "Експортувати",
+    "EXPORT_EVENT_TITLE": "Експортувати подію",
+    "SEND_TO_EMAIL": "Надіслати на електронну адресу"
+  },
+  "ur": {
+    "ADD_TO_CALENDAR": "کیلنڈر میں شامل کریں",
+    "CLOSE_BUTTON_ARIA": "بند کریں",
+    "EXPORT_BUTTON": "برآمد کریں",
+    "EXPORT_EVENT_TITLE": "تقریب برآمد کریں",
+    "SEND_TO_EMAIL": "ای میل پر بھیجیں"
+  },
+  "uz": {
+    "ADD_TO_CALENDAR": "Taqvimga kiritish",
+    "CLOSE_BUTTON_ARIA": "Yopish",
+    "EXPORT_BUTTON": "Eksport",
+    "EXPORT_EVENT_TITLE": "Tadbirni eksport qilish",
+    "SEND_TO_EMAIL": "E-mailga yuborish"
+  },
+  "vi": {
+    "EXPORT_BUTTON": "Xem tất cả",
+    "EXPORT_EVENT_TITLE": "Mới"
+  },
+  "zh-Hans": {
+    "CLOSE_BUTTON_ARIA": "通知操作",
+    "EXPORT_BUTTON": "查看全部",
+    "EXPORT_EVENT_TITLE": "新通知"
+  },
+  "zh-Hant": {
+    "CLOSE_BUTTON_ARIA": "通知動作",
+    "EXPORT_BUTTON": "查看全部",
+    "EXPORT_EVENT_TITLE": "新通知"
+  }
+}

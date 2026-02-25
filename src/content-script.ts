@@ -22,6 +22,10 @@ let dotUncheckedClassName = '';
 let innerDotHtml = '';
 // Stores the ICS download URL captured at injection time
 let savedIcsUrl = '';
+// Stores computed styles of the unchecked dot for the cover overlay
+let uncheckedDotBorderColor = '';
+let uncheckedDotSize = 0;
+const DOT_COVER_ID = 'gcal-native-dot-cover';
 
 // Inject CSS for our option's hover and cursor.
 function injectHoverStyles() {
@@ -99,7 +103,13 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
       innerDotHtml = checkedDot.firstElementChild.outerHTML;
     }
   }
-  if (uncheckedDot) dotUncheckedClassName = uncheckedDot.className;
+  if (uncheckedDot) {
+    dotUncheckedClassName = uncheckedDot.className;
+    // Read the computed styles of the unchecked dot for later use as an overlay
+    const computed = window.getComputedStyle(uncheckedDot);
+    uncheckedDotBorderColor = computed.borderColor;
+    uncheckedDotSize = uncheckedDot.offsetWidth;
+  }
 
   // Clone the EMAIL section (the unchecked one) — this gives us:
   // 1. Correct unchecked dot visual by default
@@ -145,8 +155,8 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   // Inject CSS hover styles
   injectHoverStyles();
 
-  // Setup interaction
-  setupGcalInteraction(dialog, gcalSection);
+  // Setup interaction — pass calendarRow so we can overlay its dot
+  setupGcalInteraction(dialog, gcalSection, calendarRow);
 }
 
 /**
@@ -180,7 +190,7 @@ function findRadioDot(radioRow: HTMLElement): HTMLElement | null {
 }
 
 
-function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
+function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement, nativeCalendarRow: HTMLElement) {
   const gcalRow = gcalSection.querySelector('[role="button"]') as HTMLElement;
   if (!gcalRow) return;
 
@@ -211,9 +221,8 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
         gcalInput.setAttribute('aria-checked', 'true');
       }
 
-      // NOTE: We do NOT modify native radio elements.
-      // The native "Dodaj do kalendarza" dot will still show as selected,
-      // but that's safe — modifying React-managed DOM causes crashes.
+      // Show a fake unfilled dot over the native checked dot
+      showNativeDotCover(nativeCalendarRow);
     },
     true,
   );
@@ -240,11 +249,59 @@ function setupGcalInteraction(dialog: HTMLElement, gcalSection: HTMLElement) {
         gcalInput.checked = false;
         gcalInput.setAttribute('aria-checked', 'false');
       }
+
+      // Remove the fake dot cover from the native row
+      hideNativeDotCover();
     });
   });
 
   // Intercept the export action via a capturing listener on the dialog
   setupExportInterception(dialog);
+}
+
+/**
+ * Place an absolutely-positioned unfilled circle over the native checked dot
+ * to visually "uncheck" it without modifying React's DOM.
+ */
+function showNativeDotCover(nativeRow: HTMLElement) {
+  if (document.getElementById(DOT_COVER_ID)) return;
+
+  const nativeDot = findRadioDot(nativeRow);
+  if (!nativeDot || !nativeDot.parentElement) return;
+
+  // Ensure the dot's parent is a positioning context
+  const dotParent = nativeDot.parentElement;
+  dotParent.style.position = 'relative';
+
+  const cover = document.createElement('div');
+  cover.id = DOT_COVER_ID;
+
+  // Get the actual background color from the dialog for a perfect match
+  const dialog = nativeRow.closest('[role="dialog"]');
+  const bgColor = dialog
+    ? window.getComputedStyle(dialog).backgroundColor
+    : '#242526';
+
+  cover.style.cssText = `
+    position: absolute;
+    top: ${nativeDot.offsetTop}px;
+    left: ${nativeDot.offsetLeft}px;
+    width: ${uncheckedDotSize || nativeDot.offsetWidth}px;
+    height: ${uncheckedDotSize || nativeDot.offsetHeight}px;
+    border-radius: 50%;
+    border: 2px solid ${uncheckedDotBorderColor || 'rgba(255, 255, 255, 0.3)'};
+    background: ${bgColor};
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 2;
+  `;
+
+  dotParent.appendChild(cover);
+}
+
+function hideNativeDotCover() {
+  const cover = document.getElementById(DOT_COVER_ID);
+  if (cover) cover.remove();
 }
 
 function setupExportInterception(dialog: HTMLElement) {

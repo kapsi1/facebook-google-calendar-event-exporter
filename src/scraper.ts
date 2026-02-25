@@ -337,10 +337,10 @@ async function runScraperStep(state: ScraperState) {
             }));
           }
 
-          // Save results to the language name we decided on in the previous phase
-          const langName = state.currentLangName || "Initial";
-          state.results[langName] = strings;
-          console.log(`[Scraper] Saved results for: ${langName}`);
+          // Save results using the HTML lang attribute (e.g., "pl", "en", "es")
+          const langCode = document.documentElement.lang || "unknown";
+          state.results[langCode] = strings;
+          console.log(`[Scraper] Saved results for language code: ${langCode}`);
 
           state.phase = 'ACCOUNT_MENU';
           state.langIndex++; // Move to next lang for next iteration
@@ -441,23 +441,6 @@ async function runScraperStep(state: ScraperState) {
         const clickable = fbLangBtn.closest('[role="menuitem"], [role="button"]') as HTMLElement;
         const target = clickable || fbLangBtn;
         
-        // Detection: If we don't have a specific language name (just the "Initial" placeholder),
-        // try to detect it from the button text before clicking.
-        if (!state.currentLangName || state.currentLangName === 'Initial') {
-          const spans = Array.from(target.querySelectorAll('span'));
-          if (spans.length >= 2) {
-            const detectedValue = spans[spans.length - 1].textContent?.trim();
-            if (detectedValue) {
-               console.log('[Scraper] Detected current language from settings menu:', detectedValue);
-               if (state.results['Initial']) {
-                 state.results[detectedValue] = state.results['Initial'];
-                 delete state.results['Initial'];
-               }
-               state.currentLangName = detectedValue;
-            }
-          }
-        }
-
         target.dispatchEvent(new MouseEvent('click', {
           view: window,
           bubbles: true,
@@ -471,20 +454,6 @@ async function runScraperStep(state: ScraperState) {
             console.warn('[Scraper] No languages found');
             setTimeout(() => runScraperStep(state), 2000);
             return;
-          }
-
-          // More precise detection: Look for aria-selected="true" in the list
-          const selectedOption = activeMenu.querySelector('[role="option"][aria-selected="true"]');
-          if (selectedOption) {
-            const listDetectedName = getCleanLanguageName(selectedOption as HTMLElement);
-            if (listDetectedName && (!state.currentLangName || state.currentLangName === 'Initial')) {
-               console.log('[Scraper] Detected current language from list selection:', listDetectedName);
-               if (state.results['Initial']) {
-                 state.results[listDetectedName] = state.results['Initial'];
-                 delete state.results['Initial'];
-               }
-               state.currentLangName = listDetectedName;
-            }
           }
 
           state.maxLangs = items.length;

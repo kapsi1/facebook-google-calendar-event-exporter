@@ -102,6 +102,7 @@
     - No location
     - All-day events (DATE vs DATETIME format)
 - [ ] Unit tests pass for ICS parser and URL builder
+- [ ] Check if it works for events in other languages
 
 ## 10. Documentation
 - [ ] Write `README.md`:

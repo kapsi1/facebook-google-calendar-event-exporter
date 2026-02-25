@@ -1,3 +1,5 @@
+// Scrapes strings from FB "Export event" popup
+
 export interface ScraperState {
   active: boolean;
   phase:
@@ -306,6 +308,28 @@ function getExportDialog(): HTMLElement | null {
   ) as HTMLElement) || null;
 }
 
+async function saveManualScrape(strings: Record<string, string>) {
+  const langCode = document.documentElement.lang || "unknown";
+  try {
+    const res = await chrome.storage.local.get(STORAGE_KEY);
+    let state = res[STORAGE_KEY] as ScraperState;
+    if (!state) {
+      state = {
+        active: false,
+        phase: 'INIT',
+        langIndex: 0,
+        maxLangs: 0,
+        results: {}
+      };
+    }
+    state.results[langCode] = strings;
+    await saveState(state);
+    console.log(`[Scraper] Saved manual scrape results to chrome.storage for: ${langCode}`);
+  } catch (e) {
+    console.error('[Scraper] Failed to save manual scrape results', e);
+  }
+}
+
 async function scrapeCurrentLanguageOnly() {
   console.log('[Scraper] Single language scrape (Alt + X) starting...');
 
@@ -314,6 +338,9 @@ async function scrapeCurrentLanguageOnly() {
   if (exportDialog) {
     const strings = extractModalStrings();
     console.log('[Scraper] Found open Export modal, extracted:', strings);
+    if (Object.keys(strings).length > 0) {
+      await saveManualScrape(strings);
+    }
     return;
   }
 
@@ -333,13 +360,11 @@ async function scrapeCurrentLanguageOnly() {
       console.log('[Scraper] Opening modal...');
       addToCalBtn.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
       
-      setTimeout(() => {
+      setTimeout(async () => {
         const strings = extractModalStrings();
-        if (Object.keys(strings).length === 0) {
-          console.warn('[Scraper] Extraction failed. Modal might not be ready.');
-          return;
+        if (Object.keys(strings).length > 0) {
+          await saveManualScrape(strings);
         }
-        console.log('[Scraper] Extracted for current language:', strings);
         
         const closeBtn = findByBgPosition('0px', '-548px');
         if (closeBtn) {

@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Facebook//NONSGML Facebook Events V1.0//EN
+BEGIN:VEVENT
+DTSTAMP:20240226T100000Z
+UID:1222469870066926@facebook.com
+SUMMARY:Zwiedzanie Schronu O.P.P.M. szpital im. S. Żeromskiego
+DTSTART:20260228T170000Z
+DTEND:20260228T200000Z
+LOCATION:Schron - OPPM - Szpital Żeromskiego
+URL:https://www.facebook.com/events/1222469870066926/
+DESCRIPTION:Zapraszamy do unikalnego schronu\nSzpitala im. S. Żeromskiego\, w którym\nna miejscu\, za gotówkę.
+END:VEVENT
+END:VCALENDAR

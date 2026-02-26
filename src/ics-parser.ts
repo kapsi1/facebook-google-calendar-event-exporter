@@ -2,6 +2,8 @@ export interface IcsEvent {
   summary: string;
   dtstart: string;
   dtend: string;
+  dtstamp?: string;
+  uid?: string;
   description?: string;
   location?: string;
   url?: string;
@@ -41,25 +43,39 @@ export function parseIcsEvent(icsContent: string): IcsEvent | null {
   const event: Partial<IcsEvent> = {};
 
   for (const line of lines) {
-    if (line === 'BEGIN:VEVENT') {
+    const upperLine = line.toUpperCase();
+    if (upperLine.startsWith('BEGIN:VEVENT')) {
       inEvent = true;
       continue;
     }
-    if (line === 'END:VEVENT') {
-      break;
+    if (upperLine.startsWith('END:VEVENT')) {
+      if (inEvent) break;
+      continue;
     }
 
     if (!inEvent) continue;
 
-    // A line format is usually NAME:VALUE or NAME;PARAM=VAL:VALUE
-    const colonIndex = line.indexOf(':');
+    // Find the first colon that is not inside a quoted parameter value.
+    // RFC 5545 §3.2: Parameter values containing COLON, SEMICOLON or COMMA must be quoted.
+    let colonIndex = -1;
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ':' && !inQuotes) {
+        colonIndex = i;
+        break;
+      }
+    }
+
     if (colonIndex === -1) continue;
 
     const propertyNamePart = line.substring(0, colonIndex);
     const propertyValue = line.substring(colonIndex + 1);
 
-    // Get base property name (before any semicolon parameters)
-    const propertyName = propertyNamePart.split(';')[0];
+    // Get base property name (before any semicolon parameters) and normalize to uppercase
+    const propertyName = propertyNamePart.split(';')[0].toUpperCase();
 
     switch (propertyName) {
       case 'SUMMARY':
@@ -70,6 +86,12 @@ export function parseIcsEvent(icsContent: string): IcsEvent | null {
         break;
       case 'DTEND':
         event.dtend = propertyValue;
+        break;
+      case 'DTSTAMP':
+        event.dtstamp = propertyValue;
+        break;
+      case 'UID':
+        event.uid = propertyValue;
         break;
       case 'DESCRIPTION':
         event.description = unescapeIcsProperty(propertyValue);
@@ -84,6 +106,8 @@ export function parseIcsEvent(icsContent: string): IcsEvent | null {
   }
 
   // Ensure required fields are present
+  // Note: While DTSTAMP and UID are MUST in RFC 5545, for our GCal export purposes
+  // we primarily need summary, dtstart and dtend.
   if (!event.summary || !event.dtstart || !event.dtend) {
     return null; // Invalid ICS event for our purposes
   }

@@ -48,7 +48,7 @@ END:VCALENDAR`;
     });
 
     it('parses the real Facebook ICS file', () => {
-      const icsPath = join(__dirname, '../e1222469870066926.ics');
+      const icsPath = join(__dirname, '../res/e1222469870066926.ics');
       const icsContent = readFileSync(icsPath, 'utf8');
 
       const result = parseIcsEvent(icsContent);

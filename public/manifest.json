@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Facebook to Google Calendar Exporter",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Adds a 'Export to Google Calendar' option to Facebook's event export modal",
   "permissions": [],
   "host_permissions": ["https://www.facebook.com/*"],

@@ -1,12 +1,16 @@
 import translations from './facebook_translations.json';
 
+const DEBUG = false;
+
 // Type helper for translations
 type LangCode = keyof typeof translations;
 
 // Lookups for all supported languages
 // Detect language once at startup
 const currentLang = document.documentElement.lang || 'en';
-const baseLang = currentLang.split('-')[0];
+const baseLang = currentLang.includes('-') ? currentLang.split('-')[0] : currentLang;
+
+if (DEBUG) console.log('[GCal Export] Language detected:', { currentLang, baseLang });
 
 type Translation = typeof translations['en'];
 
@@ -29,7 +33,8 @@ const getMatchers = (key: keyof Translation): string[] => {
   const tEn = translations.en as Translation;
   if (tEn?.[key]) results.add(tEn[key]);
 
-  return Array.from(results);
+  // Return all matchers in lowercase for case-insensitive comparison
+  return Array.from(results).map(s => s.toLowerCase());
 };
 
 const TEXT_MATCHERS = {
@@ -39,6 +44,8 @@ const TEXT_MATCHERS = {
   EXPORT_BUTTON: getMatchers('EXPORT_BUTTON'),
   CLOSE_BUTTON_ARIA: getMatchers('CLOSE_BUTTON_ARIA'),
 };
+
+if (DEBUG) console.log('[GCal Export] Matchers initialized:', TEXT_MATCHERS);
 
 const GCAL_OPTION_ID = 'gcal-export-option';
 let isGcalSelected = false;
@@ -90,6 +97,10 @@ function injectHoverStyles() {
 
 // Main observer for modal injections and removal
 const observer = new MutationObserver((mutations) => {
+  // Performance optimization: Quit early if we are not on an events-related page.
+  // This prevents running logic on the main Feed or other high-activity pages.
+  if (!window.location.pathname.includes('/events/')) return;
+
   let potentiallyChanged = false;
   for (const mutation of mutations) {
     if (mutation.addedNodes.length || mutation.removedNodes.length) {
@@ -113,13 +124,15 @@ function checkForExportModal() {
   const dialog = document.querySelector('div[role="dialog"]');
   if (!dialog) return;
 
-  // Faster check: use getElementsByTagName instead of querySelectorAll
   const spans = dialog.getElementsByTagName('span');
   for (let i = 0; i < spans.length; i++) {
-    const text = spans[i].textContent?.trim();
-    if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
-      injectGoogleCalendarOption(dialog as HTMLElement);
-      return;
+    const text = spans[i].textContent?.trim().toLowerCase();
+    if (text) {
+      if (TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
+        if (DEBUG) console.log('[GCal Export] Modal detected with title:', spans[i].textContent?.trim());
+        injectGoogleCalendarOption(dialog as HTMLElement);
+        return;
+      }
     }
   }
 }
@@ -127,6 +140,7 @@ function checkForExportModal() {
 function verifyModalStillOpen() {
   const dialog = document.querySelector('div[role="dialog"]');
   if (!dialog) {
+    if (DEBUG) console.log('[GCal Export] Reset: Dialog not found');
     resetState();
     return;
   }
@@ -134,7 +148,7 @@ function verifyModalStillOpen() {
   const spans = dialog.getElementsByTagName('span');
   let found = false;
   for (let i = 0; i < spans.length; i++) {
-    const text = spans[i].textContent?.trim();
+    const text = spans[i].textContent?.trim().toLowerCase();
     if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
       found = true;
       break;
@@ -142,6 +156,7 @@ function verifyModalStillOpen() {
   }
   
   if (!found) {
+    if (DEBUG) console.log('[GCal Export] Reset: Title not found in remaining spans');
     resetState();
   }
 }
@@ -160,7 +175,7 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
 
   const spans = dialog.getElementsByTagName('span');
   for (let i = 0; i < spans.length; i++) {
-    const text = spans[i].textContent?.trim();
+    const text = spans[i].textContent?.trim().toLowerCase();
     if (!text) continue;
 
     if (!calendarSpan && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(text)) {
@@ -172,9 +187,17 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
     if (calendarSpan && emailSpan) break;
   }
 
-  if (!calendarSpan || !emailSpan) return;
+  if (!calendarSpan || !emailSpan) {
+    if (DEBUG) console.warn('[GCal Export] Could not find required native options. Found:', { 
+      calendarSpan: !!calendarSpan, 
+      emailSpan: !!emailSpan,
+      lang: document.documentElement.lang
+    });
+    return;
+  }
 
   const lang = document.documentElement.lang || 'en';
+  if (DEBUG) console.log('[GCal Export] Injecting GCal option using language:', lang);
 
   // Find the section wrappers.
   // Structure: dialog > sectionDiv > innerDiv > div[role="button"]
@@ -211,9 +234,16 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
   gcalSection.id = GCAL_OPTION_ID;
 
   // Change the text label
-  const gcalTextSpan = Array.from(gcalSection.querySelectorAll('span')).find(
-    (s) => s.textContent && TEXT_MATCHERS.SEND_TO_EMAIL.includes(s.textContent.trim()),
-  );
+  const clonedSpans = gcalSection.getElementsByTagName('span');
+  let gcalTextSpan: HTMLSpanElement | null = null;
+  for (let i = 0; i < clonedSpans.length; i++) {
+    const text = clonedSpans[i].textContent?.trim().toLowerCase();
+    if (text && TEXT_MATCHERS.SEND_TO_EMAIL.includes(text)) {
+      gcalTextSpan = clonedSpans[i];
+      break;
+    }
+  }
+  
   if (gcalTextSpan) {
     gcalTextSpan.textContent = getGcalText(lang);
   }
@@ -413,9 +443,8 @@ function setupExportInterception(dialog: HTMLElement) {
       if (!clickedEl) return;
 
       // React changes the button text based on selection. It must contain EXPORT_BUTTON text.
-      const hasExportText =
-        clickedEl.textContent &&
-        TEXT_MATCHERS.EXPORT_BUTTON.some((t) => clickedEl.textContent?.includes(t));
+      const text = clickedEl.textContent?.toLowerCase() || '';
+      const hasExportText = TEXT_MATCHERS.EXPORT_BUTTON.some((t) => text.includes(t));
       const isRadioRow = !!clickedEl.querySelector('input[type="radio"]');
       if (!hasExportText || isRadioRow) return;
 

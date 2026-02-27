@@ -1,6 +1,6 @@
 {
   "name": "facebook-google-calendar-event-exporter",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Browser extension that adds a 'Export to Google Calendar' option to Facebook's event export modal",
   "private": true,
   "type": "module",

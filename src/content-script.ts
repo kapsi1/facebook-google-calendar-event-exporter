@@ -4,12 +4,40 @@ import translations from './facebook_translations.json';
 type LangCode = keyof typeof translations;
 
 // Lookups for all supported languages
+// Detect language once at startup
+const currentLang = document.documentElement.lang || 'en';
+const baseLang = currentLang.split('-')[0];
+
+type Translation = typeof translations['en'];
+
+const getMatchers = (key: keyof Translation): string[] => {
+  const results = new Set<string>();
+  
+  // 1. Precise match (e.g. zh-Hans)
+  if (currentLang in translations) {
+    const tFull = translations[currentLang as LangCode] as Translation;
+    if (tFull?.[key]) results.add(tFull[key]);
+  }
+  
+  // 2. Base match (e.g. en)
+  if (baseLang in translations) {
+    const tBase = translations[baseLang as LangCode] as Translation;
+    if (tBase?.[key]) results.add(tBase[key]);
+  }
+  
+  // 3. English fallback (always safe)
+  const tEn = translations.en as Translation;
+  if (tEn?.[key]) results.add(tEn[key]);
+
+  return Array.from(results);
+};
+
 const TEXT_MATCHERS = {
-  EXPORT_EVENT_TITLE: Array.from(new Set(Object.values(translations).map(t => (t as { EXPORT_EVENT_TITLE?: string }).EXPORT_EVENT_TITLE).filter(Boolean) as string[])),
-  ADD_TO_CALENDAR: Array.from(new Set(Object.values(translations).map(t => (t as { ADD_TO_CALENDAR?: string }).ADD_TO_CALENDAR).filter(Boolean) as string[])),
-  SEND_TO_EMAIL: Array.from(new Set(Object.values(translations).map(t => (t as { SEND_TO_EMAIL?: string }).SEND_TO_EMAIL).filter(Boolean) as string[])),
-  EXPORT_BUTTON: Array.from(new Set(Object.values(translations).map(t => (t as { EXPORT_BUTTON?: string }).EXPORT_BUTTON).filter(Boolean) as string[])),
-  CLOSE_BUTTON_ARIA: Array.from(new Set(Object.values(translations).map(t => (t as { CLOSE_BUTTON_ARIA?: string }).CLOSE_BUTTON_ARIA).filter(Boolean) as string[])),
+  EXPORT_EVENT_TITLE: getMatchers('EXPORT_EVENT_TITLE'),
+  ADD_TO_CALENDAR: getMatchers('ADD_TO_CALENDAR'),
+  SEND_TO_EMAIL: getMatchers('SEND_TO_EMAIL'),
+  EXPORT_BUTTON: getMatchers('EXPORT_BUTTON'),
+  CLOSE_BUTTON_ARIA: getMatchers('CLOSE_BUTTON_ARIA'),
 };
 
 const GCAL_OPTION_ID = 'gcal-export-option';
@@ -60,42 +88,90 @@ function injectHoverStyles() {
   document.head.appendChild(style);
 }
 
-// Observe body for modal injections
+// Main observer for modal injections and removal
 const observer = new MutationObserver((mutations) => {
+  let potentiallyChanged = false;
   for (const mutation of mutations) {
-    if (mutation.addedNodes.length) {
-      checkForExportModal();
+    if (mutation.addedNodes.length || mutation.removedNodes.length) {
+      potentiallyChanged = true;
+      break;
     }
   }
+
+  if (!potentiallyChanged) return;
+
+  if (!isOptionInjected) {
+    checkForExportModal();
+  } else {
+    verifyModalStillOpen();
+  }
 });
+
 observer.observe(document.body, { childList: true, subtree: true });
 
 function checkForExportModal() {
-  if (isOptionInjected) return;
-  
-  const dialogs = document.querySelectorAll('div[role="dialog"]');
-  for (const dialog of dialogs) {
-    const spans = Array.from(dialog.querySelectorAll('span'));
-    const isExportModal = spans.some(
-      (span) =>
-        span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
-    );
-    if (isExportModal) {
+  const dialog = document.querySelector('div[role="dialog"]');
+  if (!dialog) return;
+
+  // Faster check: use getElementsByTagName instead of querySelectorAll
+  const spans = dialog.getElementsByTagName('span');
+  for (let i = 0; i < spans.length; i++) {
+    const text = spans[i].textContent?.trim();
+    if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
       injectGoogleCalendarOption(dialog as HTMLElement);
-      break;
+      return;
     }
   }
 }
 
+function verifyModalStillOpen() {
+  const dialog = document.querySelector('div[role="dialog"]');
+  if (!dialog) {
+    resetState();
+    return;
+  }
+
+  const spans = dialog.getElementsByTagName('span');
+  let found = false;
+  for (let i = 0; i < spans.length; i++) {
+    const text = spans[i].textContent?.trim();
+    if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
+      found = true;
+      break;
+    }
+  }
+  
+  if (!found) {
+    resetState();
+  }
+}
+
+function resetState() {
+  isOptionInjected = false;
+  isGcalSelected = false;
+  savedIcsUrl = '';
+  hideNativeDotCover();
+}
+
 function injectGoogleCalendarOption(dialog: HTMLElement) {
-  // Detect language
-  const allSpans = Array.from(dialog.querySelectorAll('span'));
-  const calendarSpan = allSpans.find(
-    (s) => s.textContent && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(s.textContent.trim()),
-  );
-  const emailSpan = allSpans.find(
-    (s) => s.textContent && TEXT_MATCHERS.SEND_TO_EMAIL.includes(s.textContent.trim()),
-  );
+  // Detect language once by iterating through spans
+  let calendarSpan: HTMLSpanElement | null = null;
+  let emailSpan: HTMLSpanElement | null = null;
+
+  const spans = dialog.getElementsByTagName('span');
+  for (let i = 0; i < spans.length; i++) {
+    const text = spans[i].textContent?.trim();
+    if (!text) continue;
+
+    if (!calendarSpan && TEXT_MATCHERS.ADD_TO_CALENDAR.includes(text)) {
+      calendarSpan = spans[i];
+    } else if (!emailSpan && TEXT_MATCHERS.SEND_TO_EMAIL.includes(text)) {
+      emailSpan = spans[i];
+    }
+    
+    if (calendarSpan && emailSpan) break;
+  }
+
   if (!calendarSpan || !emailSpan) return;
 
   const lang = document.documentElement.lang || 'en';
@@ -241,36 +317,36 @@ function setupGcalInteraction(
     true,
   );
 
-  // Listen for clicks on native radio rows to uncheck ours
-  const nativeRows = dialog.querySelectorAll('[role="button"]');
-  nativeRows.forEach((row) => {
-    if (row === gcalRow) return;
+  // Listen for clicks on native radio rows to uncheck ours using event delegation
+  dialog.addEventListener('click', (e) => {
+    // Ignore programmatic clicks we trigger to force React state
+    if (isProgrammaticClick) return;
+
+    const row = (e.target as HTMLElement).closest('[role="button"]') as HTMLElement;
+    if (!row || row === gcalRow) return;
+    
+    // Check if this button is actually a radio option (it has a radio input)
     if (!row.querySelector('input[type="radio"]')) return;
 
-    row.addEventListener('click', () => {
-      // Ignore programmatic clicks we trigger to force React state
-      if (isProgrammaticClick) return;
+    if (!isGcalSelected) return;
+    isGcalSelected = false;
 
-      if (!isGcalSelected) return;
-      isGcalSelected = false;
+    // Reset only our own radio to unchecked
+    const gcalDot = findRadioDot(gcalRow);
+    if (gcalDot && dotUncheckedClassName) {
+      gcalDot.className = dotUncheckedClassName;
+      // Remove inner dot child
+      while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
+    }
+    const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
+    if (gcalInput) {
+      gcalInput.checked = false;
+      gcalInput.setAttribute('aria-checked', 'false');
+    }
 
-      // Reset only our own radio to unchecked
-      const gcalDot = findRadioDot(gcalRow);
-      if (gcalDot && dotUncheckedClassName) {
-        gcalDot.className = dotUncheckedClassName;
-        // Remove inner dot child
-        while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
-      }
-      const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
-      if (gcalInput) {
-        gcalInput.checked = false;
-        gcalInput.setAttribute('aria-checked', 'false');
-      }
-
-      // Remove the fake dot cover from the native row
-      hideNativeDotCover();
-    });
-  });
+    // Remove the fake dot cover from the native row
+    hideNativeDotCover();
+  }, true);
 
   // Intercept the export action via a capturing listener on the dialog
   setupExportInterception(dialog);
@@ -366,23 +442,6 @@ function setupExportInterception(dialog: HTMLElement) {
   );
 }
 
-// Reset state when modal is removed from DOM
-const resetObserver = new MutationObserver(() => {
-  if (!isOptionInjected) return;
 
-  const dialogs = document.querySelectorAll('div[role="dialog"]');
-  const isExportModalOpen = Array.from(dialogs).some((dialog) =>
-    Array.from(dialog.querySelectorAll('span')).some(
-      (span) =>
-        span.textContent && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(span.textContent.trim()),
-    ),
-  );
-
-  if (!isExportModalOpen) {
-    isOptionInjected = false;
-    isGcalSelected = false;
-  }
-});
-resetObserver.observe(document.body, { childList: true, subtree: true });
 
 

@@ -113,6 +113,7 @@
   - Installation instructions (load unpacked)
   - Development setup (`pnpm install`, `pnpm run dev`)
   - How the Google Calendar URL template works
-  - Known limitations
+- [x] Create store description (in `STORE_DESCRIPTION.md`)
+- [x] Update `manifest.json` description
+- [x] Add screenshots to README
 - [x] Add a `LICENSE` file (MIT or your preferred license)
-

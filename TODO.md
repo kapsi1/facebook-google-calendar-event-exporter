@@ -117,3 +117,7 @@
 - [x] Update `manifest.json` description
 - [x] Add screenshots to README
 - [x] Add a `LICENSE` file (MIT or your preferred license)
+
+## 11. Maintenance & Bugfixes
+- [x] Fix duplicate option injection when modal or page is left open for a long time
+

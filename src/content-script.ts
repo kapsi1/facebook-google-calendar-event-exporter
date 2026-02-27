@@ -111,6 +111,14 @@ const observer = new MutationObserver((mutations) => {
 
   if (!potentiallyChanged) return;
 
+  // Sync state with actual DOM presence
+  const currentlyInjected = !!document.getElementById(GCAL_OPTION_ID);
+  if (isOptionInjected && !currentlyInjected) {
+    if (DEBUG) console.log('[GCal Export] Sync: Option removed from DOM');
+    resetState();
+  }
+  isOptionInjected = currentlyInjected;
+
   if (!isOptionInjected) {
     checkForExportModal();
   } else {
@@ -123,6 +131,12 @@ observer.observe(document.body, { childList: true, subtree: true });
 function checkForExportModal() {
   const dialog = document.querySelector('div[role="dialog"]');
   if (!dialog) return;
+
+  // If already injected in this dialog, just sync state and return
+  if (dialog.querySelector('#' + GCAL_OPTION_ID)) {
+    isOptionInjected = true;
+    return;
+  }
 
   const spans = dialog.getElementsByTagName('span');
   for (let i = 0; i < spans.length; i++) {
@@ -169,6 +183,9 @@ function resetState() {
 }
 
 function injectGoogleCalendarOption(dialog: HTMLElement) {
+  // Final safeguard to prevent duplicates
+  if (dialog.querySelector('#' + GCAL_OPTION_ID)) return;
+
   // Detect language once by iterating through spans
   let calendarSpan: HTMLSpanElement | null = null;
   let emailSpan: HTMLSpanElement | null = null;

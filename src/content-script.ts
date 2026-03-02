@@ -12,29 +12,29 @@ const baseLang = currentLang.includes('-') ? currentLang.split('-')[0] : current
 
 if (DEBUG) console.log('[GCal Export] Language detected:', { currentLang, baseLang });
 
-type Translation = typeof translations['en'];
+type Translation = (typeof translations)['en'];
 
 const getMatchers = (key: keyof Translation): string[] => {
   const results = new Set<string>();
-  
+
   // 1. Precise match (e.g. zh-Hans)
   if (currentLang in translations) {
     const tFull = translations[currentLang as LangCode] as Translation;
     if (tFull?.[key]) results.add(tFull[key]);
   }
-  
+
   // 2. Base match (e.g. en)
   if (baseLang in translations) {
     const tBase = translations[baseLang as LangCode] as Translation;
     if (tBase?.[key]) results.add(tBase[key]);
   }
-  
+
   // 3. English fallback (always safe)
   const tEn = translations.en as Translation;
   if (tEn?.[key]) results.add(tEn[key]);
 
   // Return all matchers in lowercase for case-insensitive comparison
-  return Array.from(results).map(s => s.toLowerCase());
+  return Array.from(results).map((s) => s.toLowerCase());
 };
 
 const TEXT_MATCHERS = {
@@ -100,7 +100,6 @@ const observer = new MutationObserver((mutations) => {
   // Performance optimization: Quit early if we are not on an events-related page.
   // This prevents running logic on the main Feed or other high-activity pages.
   if (!window.location.pathname.includes('/events/')) return;
-
   let potentiallyChanged = false;
   for (const mutation of mutations) {
     if (mutation.addedNodes.length || mutation.removedNodes.length) {
@@ -129,21 +128,31 @@ const observer = new MutationObserver((mutations) => {
 observer.observe(document.body, { childList: true, subtree: true });
 
 function checkForExportModal() {
-  const dialog = document.querySelector('div[role="dialog"]');
-  if (!dialog) return;
+  const dialogs = document.querySelectorAll('div[role="dialog"]');
+  if (DEBUG) console.log('[GCal Export] Checking dialogs:', dialogs.length);
 
-  // If already injected in this dialog, just sync state and return
-  if (dialog.querySelector('#' + GCAL_OPTION_ID)) {
-    isOptionInjected = true;
-    return;
-  }
+  for (const dialog of Array.from(dialogs)) {
+    // If already injected in this dialog, just sync state and return
+    if (dialog.querySelector('#' + GCAL_OPTION_ID)) {
+      isOptionInjected = true;
+      return;
+    }
 
-  const spans = dialog.getElementsByTagName('span');
-  for (let i = 0; i < spans.length; i++) {
-    const text = spans[i].textContent?.trim().toLowerCase();
-    if (text) {
-      if (TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
-        if (DEBUG) console.log('[GCal Export] Modal detected with title:', spans[i].textContent?.trim());
+    // 1. Check aria-label of the dialog itself
+    const ariaLabel = dialog.getAttribute('aria-label')?.trim().toLowerCase();
+    if (ariaLabel && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(ariaLabel)) {
+      if (DEBUG) console.log('[GCal Export] Modal detected (aria-label):', ariaLabel);
+      injectGoogleCalendarOption(dialog as HTMLElement);
+      return;
+    }
+
+    // 2. Check title spans inside
+    const spans = dialog.getElementsByTagName('span');
+    for (let i = 0; i < spans.length; i++) {
+      const text = spans[i].textContent?.trim().toLowerCase();
+      if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
+        if (DEBUG)
+          console.log('[GCal Export] Modal detected (span text):', spans[i].textContent?.trim());
         injectGoogleCalendarOption(dialog as HTMLElement);
         return;
       }
@@ -152,25 +161,33 @@ function checkForExportModal() {
 }
 
 function verifyModalStillOpen() {
-  const dialog = document.querySelector('div[role="dialog"]');
-  if (!dialog) {
-    if (DEBUG) console.log('[GCal Export] Reset: Dialog not found');
-    resetState();
-    return;
-  }
-
-  const spans = dialog.getElementsByTagName('span');
+  const dialogs = document.querySelectorAll('div[role="dialog"]');
   let found = false;
-  for (let i = 0; i < spans.length; i++) {
-    const text = spans[i].textContent?.trim().toLowerCase();
-    if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
-      found = true;
-      break;
+
+  for (const dialog of Array.from(dialogs)) {
+    // Check if the dialog contains our option
+    if (dialog.querySelector('#' + GCAL_OPTION_ID)) {
+      // Confirm it's still the correct dialog by title match
+      const ariaLabel = dialog.getAttribute('aria-label')?.trim().toLowerCase();
+      if (ariaLabel && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(ariaLabel)) {
+        found = true;
+        break;
+      }
+
+      const spans = dialog.getElementsByTagName('span');
+      for (let i = 0; i < spans.length; i++) {
+        const text = spans[i].textContent?.trim().toLowerCase();
+        if (text && TEXT_MATCHERS.EXPORT_EVENT_TITLE.includes(text)) {
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
     }
   }
-  
+
   if (!found) {
-    if (DEBUG) console.log('[GCal Export] Reset: Title not found in remaining spans');
+    if (DEBUG) console.log('[GCal Export] Reset: Export dialog not found among active dialogs');
     resetState();
   }
 }
@@ -200,16 +217,17 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
     } else if (!emailSpan && TEXT_MATCHERS.SEND_TO_EMAIL.includes(text)) {
       emailSpan = spans[i];
     }
-    
+
     if (calendarSpan && emailSpan) break;
   }
 
   if (!calendarSpan || !emailSpan) {
-    if (DEBUG) console.warn('[GCal Export] Could not find required native options. Found:', { 
-      calendarSpan: !!calendarSpan, 
-      emailSpan: !!emailSpan,
-      lang: document.documentElement.lang
-    });
+    if (DEBUG)
+      console.warn('[GCal Export] Could not find required native options. Found:', {
+        calendarSpan: !!calendarSpan,
+        emailSpan: !!emailSpan,
+        lang: document.documentElement.lang,
+      });
     return;
   }
 
@@ -260,7 +278,7 @@ function injectGoogleCalendarOption(dialog: HTMLElement) {
       break;
     }
   }
-  
+
   if (gcalTextSpan) {
     gcalTextSpan.textContent = getGcalText(lang);
   }
@@ -365,35 +383,39 @@ function setupGcalInteraction(
   );
 
   // Listen for clicks on native radio rows to uncheck ours using event delegation
-  dialog.addEventListener('click', (e) => {
-    // Ignore programmatic clicks we trigger to force React state
-    if (isProgrammaticClick) return;
+  dialog.addEventListener(
+    'click',
+    (e) => {
+      // Ignore programmatic clicks we trigger to force React state
+      if (isProgrammaticClick) return;
 
-    const row = (e.target as HTMLElement).closest('[role="button"]') as HTMLElement;
-    if (!row || row === gcalRow) return;
-    
-    // Check if this button is actually a radio option (it has a radio input)
-    if (!row.querySelector('input[type="radio"]')) return;
+      const row = (e.target as HTMLElement).closest('[role="button"]') as HTMLElement;
+      if (!row || row === gcalRow) return;
 
-    if (!isGcalSelected) return;
-    isGcalSelected = false;
+      // Check if this button is actually a radio option (it has a radio input)
+      if (!row.querySelector('input[type="radio"]')) return;
 
-    // Reset only our own radio to unchecked
-    const gcalDot = findRadioDot(gcalRow);
-    if (gcalDot && dotUncheckedClassName) {
-      gcalDot.className = dotUncheckedClassName;
-      // Remove inner dot child
-      while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
-    }
-    const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
-    if (gcalInput) {
-      gcalInput.checked = false;
-      gcalInput.setAttribute('aria-checked', 'false');
-    }
+      if (!isGcalSelected) return;
+      isGcalSelected = false;
 
-    // Remove the fake dot cover from the native row
-    hideNativeDotCover();
-  }, true);
+      // Reset only our own radio to unchecked
+      const gcalDot = findRadioDot(gcalRow);
+      if (gcalDot && dotUncheckedClassName) {
+        gcalDot.className = dotUncheckedClassName;
+        // Remove inner dot child
+        while (gcalDot.firstChild) gcalDot.removeChild(gcalDot.firstChild);
+      }
+      const gcalInput = gcalSection.querySelector('input[type="radio"]') as HTMLInputElement;
+      if (gcalInput) {
+        gcalInput.checked = false;
+        gcalInput.setAttribute('aria-checked', 'false');
+      }
+
+      // Remove the fake dot cover from the native row
+      hideNativeDotCover();
+    },
+    true,
+  );
 
   // Intercept the export action via a capturing listener on the dialog
   setupExportInterception(dialog);
@@ -487,7 +509,3 @@ function setupExportInterception(dialog: HTMLElement) {
     true,
   );
 }
-
-
-
-

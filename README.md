@@ -4,13 +4,6 @@ A browser extension that adds an **"Export to Google Calendar"** option to Faceb
 
 <img src="res/extension-screenshot-612x408.png" width="400" alt="Facebook to Google Calendar Exporter Screenshot">
 
-## Features
-- Seamless integration with Facebook's "Export Event" dialog.
-- Supports light and dark modes.
-- Directly opens Google Calendar with pre-filled event details (Title, Date, Time, Description, Location).
-- No intrusive permissions (only requires access to `facebook.com`).
-- Privacy-focused: All parsing and processing happen locally on your computer.
-
 ## Installation
 
 ### For Users (Manual Installation)

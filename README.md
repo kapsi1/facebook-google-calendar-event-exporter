@@ -2,7 +2,7 @@
 
 A browser extension that adds an **"Export to Google Calendar"** option to Facebook's event export modal. 
 
-![Facebook to Google Calendar Exporter Screenshot](res/extension-screenshot-612x408.png)
+<img src="res/extension-screenshot-612x408.png" width="400" alt="Facebook to Google Calendar Exporter Screenshot">
 
 ## Features
 - Seamless integration with Facebook's "Export Event" dialog.
@@ -32,7 +32,7 @@ A browser extension that adds an **"Export to Google Calendar"** option to Faceb
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/facebook-google-calendar-event-exporter.git
+   git clone https://github.com/kapsi1/facebook-google-calendar-event-exporter.git
    cd facebook-google-calendar-event-exporter
    ```
 2. Install dependencies:
